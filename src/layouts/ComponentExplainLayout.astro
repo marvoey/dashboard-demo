@@ -23,7 +23,7 @@ const { title, componentType, owner, description } = Astro.props;
   <div class="explain-shell">
 
     <header class="explain-topbar" style="height: 80px;">
-      <a onclick="history.back()" class="explain-back">← Back to Portal</a>
+      <a href="/" onclick="if(history.length>1){event.preventDefault();history.back();}" class="explain-back">← Back to Portal</a>
       <a href="/" style="position:absolute; left:50%; transform:translateX(-50%);">
         <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" height="60" style="padding-bottom: 10px"/>
       </a>
