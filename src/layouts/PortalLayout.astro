@@ -463,6 +463,71 @@ const { title, persona } = Astro.props;
     .claim-type { font-size: 0.84rem; font-weight: 500; }
     .claim-date { font-size: 0.75rem; color: var(--text-muted); }
     .claim-amount { font-size: 0.875rem; font-weight: 600; color: var(--navy); }
+
+    /* ── Page grid ── */
+    .page-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .span-3 { grid-column: 1 / -1; }
+    .span-2 { grid-column: span 2; }
+
+    /* ── Component cards ── */
+    .comp {
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .comp-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      font-size: 0.75rem; /* ← adjust card label size here */
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .comp-bar-left { display: flex; align-items: center; gap: 6px; }
+
+    .comp-body { flex: 1; padding: 16px; }
+    .comp-body-flush { flex: 1; }
+
+    /* CMS — orange */
+    .comp-cms { border: 1.5px solid #FDBA74; }
+    .comp-cms .comp-bar { background: #FFF7ED; color: #C2410C; border-bottom: 1px solid #FED7AA; }
+
+    /* Live data — blue */
+    .comp-data { border: 1.5px solid #93C5FD; }
+    .comp-data .comp-bar { background: #EFF6FF; color: #1D4ED8; border-bottom: 1px solid #BFDBFE; }
+
+    /* Data table — teal */
+    .comp-table { border: 1.5px solid #5EEAD4; }
+    .comp-table .comp-bar { background: #F0FDFA; color: #0F766E; border-bottom: 1px solid #99F6E4; }
+
+    /* ── Stat display ── */
+    .stat-value-lg {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+      line-height: 1;
+      margin: 8px 0 4px;
+    }
+    .stat-label-sm {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+    .stat-sub-sm { font-size: 0.75rem; color: var(--text-muted); }
   </style>
 </head>
 <body>
