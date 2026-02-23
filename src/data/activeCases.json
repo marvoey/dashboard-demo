@@ -1,0 +1,52 @@
+[
+  {
+    "caseId": "TM-2024-0891",
+    "employer": "Meridian Logistics Group",
+    "product": "Universal Life + LTC",
+    "employees": 142,
+    "status": "Active",
+    "effectiveDate": "2024-01-01",
+    "renewalDate": "2024-12-31",
+    "premium": "$18,450/mo"
+  },
+  {
+    "caseId": "TM-2024-1034",
+    "employer": "Northshore Medical Partners",
+    "product": "Critical Illness + Accident",
+    "employees": 87,
+    "status": "Pending Enrollment",
+    "effectiveDate": "2024-03-01",
+    "renewalDate": "2025-02-28",
+    "premium": "$9,210/mo"
+  },
+  {
+    "caseId": "TM-2023-0762",
+    "employer": "Lakeland School District",
+    "product": "Disability + Hospital",
+    "employees": 310,
+    "status": "Active",
+    "effectiveDate": "2023-07-01",
+    "renewalDate": "2024-06-30",
+    "premium": "$34,100/mo"
+  },
+  {
+    "caseId": "TM-2024-1187",
+    "employer": "Apex Retail Holdings",
+    "product": "Life Insurance",
+    "employees": 56,
+    "status": "Renewal Due",
+    "effectiveDate": "2023-04-01",
+    "renewalDate": "2024-03-31",
+    "premium": "$4,880/mo"
+  },
+  {
+    "caseId": "TM-2024-1245",
+    "employer": "Clearwater Financial",
+    "product": "Universal Life + LTC",
+    "employees": 203,
+    "status": "Active",
+    "effectiveDate": "2024-02-01",
+    "renewalDate": "2025-01-31",
+    "premium": "$27,600/mo"
+  }
+]

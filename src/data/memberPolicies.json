@@ -1,0 +1,26 @@
+[
+  {
+    "policyId": "VB-0039821",
+    "product": "Universal Life + LTC",
+    "status": "Active",
+    "coverageAmount": "$250,000",
+    "premium": "$128.40/mo",
+    "nextPayment": "2024-04-01"
+  },
+  {
+    "policyId": "VB-0041102",
+    "product": "Critical Illness",
+    "status": "Active",
+    "coverageAmount": "$50,000",
+    "premium": "$44.20/mo",
+    "nextPayment": "2024-04-01"
+  },
+  {
+    "policyId": "VB-0038774",
+    "product": "Accident Insurance",
+    "status": "Active",
+    "coverageAmount": "$25,000",
+    "premium": "$18.90/mo",
+    "nextPayment": "2024-04-01"
+  }
+]

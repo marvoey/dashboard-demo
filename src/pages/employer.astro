@@ -1,0 +1,301 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import account from '../data/employerAccount.json';
+---
+
+<style>
+  /* ── Page grid ── */
+  .page-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .span-3 { grid-column: 1 / -1; }
+  .span-2 { grid-column: span 2; }
+
+  /* ── Base component card ── */
+  .comp {
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* Component label bar */
+  .comp-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    font-size: 0.75rem; /* ← adjust card label size here */
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .comp-bar-left { display: flex; align-items: center; gap: 6px; }
+
+  .comp-body {
+    flex: 1;
+    padding: 16px;
+  }
+
+  .comp-body-flush {
+    flex: 1;
+  }
+
+  /* ── CMS component — orange ── */
+  .comp-cms {
+    border: 1.5px solid #FDBA74;
+  }
+  .comp-cms .comp-bar {
+    background: #FFF7ED;
+    color: #C2410C;
+    border-bottom: 1px solid #FED7AA;
+  }
+
+  /* ── Live data component — blue ── */
+  .comp-data {
+    border: 1.5px solid #93C5FD;
+  }
+  .comp-data .comp-bar {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border-bottom: 1px solid #BFDBFE;
+  }
+
+  /* ── Data table component — teal ── */
+  .comp-table {
+    border: 1.5px solid #5EEAD4;
+  }
+  .comp-table .comp-bar {
+    background: #F0FDFA;
+    color: #0F766E;
+    border-bottom: 1px solid #99F6E4;
+  }
+
+  /* Stat layout inside comp-body */
+  .stat-value-lg {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .stat-label-sm {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+  }
+  .stat-sub-sm {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+</style>
+
+<PortalLayout title="Employer Dashboard" persona="employer">
+
+  <div class="page-header">
+    <h1>{account.company}</h1>
+    <p>Your benefits account overview. Data sourced from Trustmark SQL Server and Salesforce.</p>
+  </div>
+
+  <div class="page-grid">
+
+    <!-- ── CMS: Renewal Alert (full width) ── -->
+    <div class="comp comp-cms span-3">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Component</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Managed by Account Management Team</span>
+        </div>
+        <span class="opti-badge">✦ Optimizely Content</span>
+      </div>
+      <div class="comp-body">
+        <div class="announcement">
+          <div>
+            <span class="announcement-tag">Renewal Notice</span>
+            <h3>Your Group Renewal is Coming Up — Action Required</h3>
+            <p>Your current benefit plan renews on {account.renewalDate}. Schedule a review with your account rep to discuss options.</p>
+          </div>
+          <a href="#" class="announcement-cta">Schedule Review →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Live Data: Stat — Enrolled Employees ── -->
+    <div class="comp comp-data">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>☁️ Live Data</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Salesforce</span>
+        </div>
+        <span class="data-source">Stat Card</span>
+      </div>
+      <div class="comp-body">
+        <div class="stat-label-sm">Enrolled Employees</div>
+        <div class="stat-value-lg">{account.enrolled}</div>
+        <div class="stat-sub-sm">{account.enrollmentRate} enrollment rate · {account.waived} waived</div>
+      </div>
+    </div>
+
+    <!-- ── Live Data: Stat — Monthly Premium ── -->
+    <div class="comp comp-data">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>🗄 Live Data</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
+        </div>
+        <span class="data-source">Stat Card</span>
+      </div>
+      <div class="comp-body">
+        <div class="stat-label-sm">Monthly Premium</div>
+        <div class="stat-value-lg">{account.monthlyPremium}</div>
+        <div class="stat-sub-sm">YTD total: {account.ytdPremium}</div>
+      </div>
+    </div>
+
+    <!-- ── Live Data: Stat — Account Rep ── -->
+    <div class="comp comp-data">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>☁️ Live Data</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Salesforce</span>
+        </div>
+        <span class="data-source">Stat Card</span>
+      </div>
+      <div class="comp-body">
+        <div class="stat-label-sm">Your Account Rep</div>
+        <div class="stat-value-lg" style="font-size:1.125rem; margin-top:6px;">{account.accountRep}</div>
+        <div class="stat-sub-sm" style="margin-top:6px;">
+          <a href={`mailto:${account.repEmail}`} style="color:var(--blue); text-decoration:none;">{account.repEmail}</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Data Table: Enrollment by Product (span 2) ── -->
+    <div class="comp comp-table span-2">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>🗄 Data Table</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
+        </div>
+        <span class="data-source">🗄 SQL Server</span>
+      </div>
+      <div class="comp-body-flush">
+        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
+          <span class="card-title">Enrollment by Product</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Enrolled</th>
+              <th>Monthly Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            {account.products.map(p => (
+              <tr>
+                <td style="font-weight: 500;">{p.name}</td>
+                <td>{p.enrolled} <span style="color: var(--text-muted); font-size: 0.75rem;">employees</span></td>
+                <td style="font-weight: 500;">{p.premium}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Data: Claims Utilization ── -->
+    <div class="comp comp-table">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>🗄 Live Data</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
+        </div>
+        <span class="data-source">Chart</span>
+      </div>
+      <div class="comp-body">
+        <div class="card-title" style="margin-bottom:14px;">Claims Utilization (YTD)</div>
+        {[
+          { label: 'Life Claims', count: 2, amount: '$420,000', pct: 85 },
+          { label: 'Critical Illness', count: 5, amount: '$180,000', pct: 62 },
+          { label: 'Accident Claims', count: 18, amount: '$44,200', pct: 38 },
+          { label: 'Hospital Claims', count: 11, amount: '$28,600', pct: 28 },
+        ].map(item => (
+          <div style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+              <span style="font-size: 0.8125rem; font-weight: 500;">{item.label}</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">{item.count} · {item.amount}</span>
+            </div>
+            <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
+              <div style={`height: 100%; width: ${item.pct}%; background: var(--blue); border-radius: 3px;`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- ── CMS: Renewal Readiness Guide ── -->
+    <div class="comp comp-cms">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Content</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Account Management</span>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="spotlight-item-tag">Renewal Prep</div>
+        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">2024 Renewal Readiness Guide</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Everything you need to prepare for your upcoming group renewal, including census templates.</p>
+      </div>
+    </div>
+
+    <!-- ── CMS: Enroll For Life Platform ── -->
+    <div class="comp comp-cms">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Content</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Account Management</span>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="spotlight-item-tag">Enrollment Tool</div>
+        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Enroll For Life™ Platform</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Self-service enrollment for permanent life products. Now available for your employee group.</p>
+      </div>
+    </div>
+
+    <!-- ── CMS: Compliance Notices ── -->
+    <div class="comp comp-cms">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Content</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Account Management</span>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="spotlight-item-tag">Compliance</div>
+        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">2024 Compliance Notices</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Required annual notices for group benefit plans. Download and distribute to employees by May 1.</p>
+      </div>
+    </div>
+
+  </div>
+
+</PortalLayout>

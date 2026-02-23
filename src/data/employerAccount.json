@@ -1,0 +1,18 @@
+{
+  "company": "Meridian Logistics Group",
+  "accountRep": "Sarah Mitchell",
+  "repEmail": "smitchell@trustmarkbenefits.com",
+  "repPhone": "(847) 555-0192",
+  "renewalDate": "2024-12-31",
+  "totalEmployees": 142,
+  "enrolled": 118,
+  "waived": 24,
+  "enrollmentRate": "83%",
+  "monthlyPremium": "$18,450",
+  "ytdPremium": "$184,500",
+  "products": [
+    { "name": "Universal Life + LTC", "enrolled": 78, "premium": "$12,100/mo" },
+    { "name": "Critical Illness", "enrolled": 52, "premium": "$4,200/mo" },
+    { "name": "Accident Insurance", "enrolled": 91, "premium": "$2,150/mo" }
+  ]
+}

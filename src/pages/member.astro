@@ -1,0 +1,260 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import policies from '../data/memberPolicies.json';
+---
+
+<style>
+  /* ── Page grid ── */
+  .page-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .span-3 { grid-column: 1 / -1; }
+  .span-2 { grid-column: span 2; }
+
+  /* ── Base component card ── */
+  .comp {
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* Component label bar */
+  .comp-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    font-size: 0.75rem; /* ← adjust card label size here */
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .comp-bar-left { display: flex; align-items: center; gap: 6px; }
+
+  .comp-body {
+    flex: 1;
+    padding: 16px;
+  }
+
+  .comp-body-flush {
+    flex: 1;
+  }
+
+  /* ── CMS component — orange ── */
+  .comp-cms {
+    border: 1.5px solid #FDBA74;
+  }
+  .comp-cms .comp-bar {
+    background: #FFF7ED;
+    color: #C2410C;
+    border-bottom: 1px solid #FED7AA;
+  }
+
+  /* ── Live data component — blue ── */
+  .comp-data {
+    border: 1.5px solid #93C5FD;
+  }
+  .comp-data .comp-bar {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border-bottom: 1px solid #BFDBFE;
+  }
+
+  /* ── Data table component — teal ── */
+  .comp-table {
+    border: 1.5px solid #5EEAD4;
+  }
+  .comp-table .comp-bar {
+    background: #F0FDFA;
+    color: #0F766E;
+    border-bottom: 1px solid #99F6E4;
+  }
+
+  /* Stat layout inside comp-body */
+  .stat-value-lg {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .stat-label-sm {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+  }
+  .stat-sub-sm {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+</style>
+
+<PortalLayout title="Member Dashboard" persona="member">
+
+  <div class="page-header">
+    <h1>My Benefits Dashboard</h1>
+    <p>Your active policies and recent claims. Data sourced from Trustmark SQL Server.</p>
+  </div>
+
+  <div class="page-grid">
+
+    <!-- ── CMS: Open Enrollment Banner (full width) ── -->
+    <div class="comp comp-cms span-3">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Component</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Managed by Marketing</span>
+        </div>
+        <span class="opti-badge">✦ Optimizely Content</span>
+      </div>
+      <div class="comp-body">
+        <div class="announcement">
+          <div>
+            <span class="announcement-tag">Open Enrollment</span>
+            <h3>Your Open Enrollment Window Closes April 30th</h3>
+            <p>Review your coverage and make changes before the deadline. New accident insurance option available this year.</p>
+          </div>
+          <a href="#" class="announcement-cta">Review Coverage →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Data Table: My Active Policies (span 2) ── -->
+    <div class="comp comp-table span-2">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>🗄 Data Table</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
+        </div>
+        <span class="data-source">🗄 SQL Server</span>
+      </div>
+      <div class="comp-body-flush">
+        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
+          <span class="card-title">My Active Policies</span>
+        </div>
+        {policies.map(p => (
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border);">
+            <div>
+              <div style="font-size: 13.5px; font-weight: 500; color: var(--navy);">{p.product}</div>
+              <div class="mono" style="margin-top: 2px;">{p.policyId}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.875rem; font-weight: 600; color: var(--navy);">{p.premium}</div>
+              <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 2px;">Coverage: {p.coverageAmount}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- ── Data Table: Recent Claims ── -->
+    <div class="comp comp-table">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>🗄 Data Table</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
+        </div>
+        <span class="data-source">🗄 SQL Server</span>
+      </div>
+      <div class="comp-body-flush">
+        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
+          <span class="card-title">Recent Claims</span>
+        </div>
+        <div style="padding: 0 16px;">
+          <div class="claim-row">
+            <div>
+              <div class="claim-type">Critical Illness — Diagnosis Benefit</div>
+              <div class="claim-date">Submitted Feb 14, 2024</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="claim-amount">$50,000</div>
+              <span class="status status-active" style="margin-top: 4px; display: inline-flex;">Paid</span>
+            </div>
+          </div>
+          <div class="claim-row">
+            <div>
+              <div class="claim-type">Accident Insurance — ER Visit</div>
+              <div class="claim-date">Submitted Jan 22, 2024</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="claim-amount">$1,500</div>
+              <span class="status status-pending" style="margin-top: 4px; display: inline-flex;">In Review</span>
+            </div>
+          </div>
+          <div class="claim-row">
+            <div>
+              <div class="claim-type">Hospital Indemnity — Inpatient Stay</div>
+              <div class="claim-date">Submitted Dec 5, 2023</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="claim-amount">$2,400</div>
+              <span class="status status-active" style="margin-top: 4px; display: inline-flex;">Paid</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CMS: Understanding Your LTC Benefit ── -->
+    <div class="comp comp-cms">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Content</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Marketing / HealthFitness</span>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="spotlight-item-tag">Guide</div>
+        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Understanding Your LTC Benefit</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">How to access long-term care services under your Life+Care® policy.</p>
+      </div>
+    </div>
+
+    <!-- ── CMS: HealthFitness Spring Challenge ── -->
+    <div class="comp comp-cms">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Content</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Marketing / HealthFitness</span>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="spotlight-item-tag">Wellness</div>
+        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">HealthFitness: Spring Challenge</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Join the company wellness challenge. Log activity to earn rewards through April.</p>
+      </div>
+    </div>
+
+    <!-- ── CMS: How to File a Claim ── -->
+    <div class="comp comp-cms">
+      <div class="comp-bar">
+        <div class="comp-bar-left">
+          <span>✦ CMS Content</span>
+          <span style="opacity:0.4;">·</span>
+          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Marketing / HealthFitness</span>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="spotlight-item-tag">FAQ</div>
+        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">How to File a Claim</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Step-by-step guide for submitting accident, illness, and hospital claims online.</p>
+      </div>
+    </div>
+
+  </div>
+
+</PortalLayout>
