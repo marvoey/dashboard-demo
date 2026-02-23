@@ -1,0 +1,26 @@
+---
+interface Props {
+  label: string;
+  value: string | number;
+  sub?: string;
+  sourceIcon: string;
+  sourceName: string;
+}
+const { label, value, sub, sourceIcon, sourceName } = Astro.props;
+---
+
+<div class="comp comp-data">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <span>{sourceIcon} Live Data</span>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{sourceName}</span>
+    </div>
+    <span class="data-source">Stat Card</span>
+  </div>
+  <div class="comp-body">
+    <div class="stat-label-sm">{label}</div>
+    <div class="stat-value-lg">{value}</div>
+    {sub && <div class="stat-sub-sm" set:html={sub}></div>}
+  </div>
+</div>

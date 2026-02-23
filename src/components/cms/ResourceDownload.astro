@@ -1,0 +1,35 @@
+---
+interface Props {
+  tag: string;
+  title: string;
+  description: string;
+  fileType: string;
+  fileSize: string;
+  assetUrl: string;
+  updatedAt: string;
+  source: string;
+}
+const { tag, title, description, fileType, fileSize, assetUrl, updatedAt, source } = Astro.props;
+---
+
+<div class="comp comp-cms">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <a href="/components/resource-download" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{source}</span>
+    </div>
+  </div>
+  <div class="comp-body">
+    <div class="resource-download">
+      <div class="rd-icon">{fileType}</div>
+      <div class="rd-body">
+        <div class="rd-tag">{tag}</div>
+        <div class="rd-title">{title}</div>
+        <p class="rd-desc">{description}</p>
+        <div class="rd-meta">{fileSize} · {updatedAt}</div>
+        <a href={assetUrl} class="rd-download">↓ Download {fileType}</a>
+      </div>
+    </div>
+  </div>
+</div>

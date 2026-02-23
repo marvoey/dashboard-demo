@@ -1,0 +1,66 @@
+---
+interface Case {
+  caseId: string;
+  employer: string;
+  product: string;
+  employees: number;
+  premium: string;
+  renewalDate: string;
+  status: string;
+}
+interface Props {
+  cases: Case[];
+}
+const { cases } = Astro.props;
+---
+
+<div class="comp comp-table span-3">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <span>🗄 Data Table</span>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">V3locity API + SQL Server</span>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <span class="data-source">⚡ V3locity API</span>
+      <span class="data-source">🗄 SQL Server</span>
+    </div>
+  </div>
+  <div class="comp-body-flush">
+    <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
+      <span class="card-title">Active Cases & Policy Status</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Case ID</th>
+          <th>Employer</th>
+          <th>Product</th>
+          <th>Employees</th>
+          <th>Premium</th>
+          <th>Renewal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {cases.map(c => (
+          <tr>
+            <td class="mono">{c.caseId}</td>
+            <td style="font-weight: 500;">{c.employer}</td>
+            <td style="color: var(--text-muted);">{c.product}</td>
+            <td>{c.employees}</td>
+            <td style="font-weight: 500;">{c.premium}</td>
+            <td class="mono">{c.renewalDate}</td>
+            <td>
+              <span class={`status ${
+                c.status === 'Active' ? 'status-active' :
+                c.status === 'Renewal Due' ? 'status-renewal' :
+                'status-pending'
+              }`}>{c.status}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

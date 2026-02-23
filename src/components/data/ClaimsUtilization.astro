@@ -1,0 +1,37 @@
+---
+interface UtilizationItem {
+  label: string;
+  count: number;
+  amount: string;
+  pct: number;
+}
+interface Props {
+  items: UtilizationItem[];
+}
+const { items } = Astro.props;
+---
+
+<div class="comp comp-table">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <span>🗄 Live Data</span>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
+    </div>
+    <span class="data-source">Chart</span>
+  </div>
+  <div class="comp-body">
+    <div class="card-title" style="margin-bottom:14px;">Claims Utilization (YTD)</div>
+    {items.map(item => (
+      <div style="margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span style="font-size: 0.8125rem; font-weight: 500;">{item.label}</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">{item.count} · {item.amount}</span>
+        </div>
+        <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
+          <div style={`height: 100%; width: ${item.pct}%; background: var(--blue); border-radius: 3px;`}></div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

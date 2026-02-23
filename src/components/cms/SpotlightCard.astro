@@ -1,0 +1,24 @@
+---
+interface Props {
+  tag: string;
+  title: string;
+  description: string;
+  source: string;
+}
+const { tag, title, description, source } = Astro.props;
+---
+
+<div class="comp comp-cms">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{source}</span>
+    </div>
+  </div>
+  <div class="comp-body">
+    <div class="spotlight-item-tag">{tag}</div>
+    <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">{title}</h4>
+    <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">{description}</p>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+---
+interface Props {
+  tag: string;
+  headline: string;
+  body: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  source: string;
+  badge?: string;
+}
+const { tag, headline, body, ctaLabel, ctaUrl, source, badge = '✦ Optimizely Content' } = Astro.props;
+---
+
+<div class="comp comp-cms span-3">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <a href="/components/announcement-banner" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{source}</span>
+    </div>
+    <span class="opti-badge">{badge}</span>
+  </div>
+  <div class="comp-body">
+    <div class="announcement">
+      <div>
+        <span class="announcement-tag">{tag}</span>
+        <h3>{headline}</h3>
+        <p>{body}</p>
+      </div>
+      <a href={ctaUrl} class="announcement-cta">{ctaLabel}</a>
+    </div>
+  </div>
+</div>

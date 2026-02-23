@@ -1,0 +1,32 @@
+---
+interface Props {
+  message: string;
+  primaryCtaLabel: string;
+  primaryCtaUrl: string;
+  secondaryCtaLabel?: string;
+  secondaryCtaUrl?: string;
+  source: string;
+  badge?: string;
+}
+const { message, primaryCtaLabel, primaryCtaUrl, secondaryCtaLabel, secondaryCtaUrl, source, badge = '✦ Auto-expires' } = Astro.props;
+---
+
+<div class="comp comp-cms span-3">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <a href="/components/cta-strip" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{source}</span>
+    </div>
+    <span class="opti-badge">{badge}</span>
+  </div>
+  <div class="comp-body">
+    <div class="cta-strip">
+      <p class="cta-strip-message" set:html={message}></p>
+      <div class="cta-strip-actions">
+        {secondaryCtaLabel && <a href={secondaryCtaUrl} class="cta-strip-secondary">{secondaryCtaLabel}</a>}
+        <a href={primaryCtaUrl} class="cta-strip-primary">{primaryCtaLabel}</a>
+      </div>
+    </div>
+  </div>
+</div>

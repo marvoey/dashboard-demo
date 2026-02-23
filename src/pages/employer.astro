@@ -1,6 +1,20 @@
 ---
 import PortalLayout from '../layouts/PortalLayout.astro';
 import account from '../data/employerAccount.json';
+import CTAStrip from '../components/cms/CTAStrip.astro';
+import AnnouncementBanner from '../components/cms/AnnouncementBanner.astro';
+import ResourceDownload from '../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../components/cms/SpotlightCard.astro';
+import StatCard from '../components/data/StatCard.astro';
+import EnrollmentTable from '../components/data/EnrollmentTable.astro';
+import ClaimsUtilization from '../components/data/ClaimsUtilization.astro';
+
+const utilizationItems = [
+  { label: 'Life Claims',       count: 2,  amount: '$420,000', pct: 85 },
+  { label: 'Critical Illness',  count: 5,  amount: '$180,000', pct: 62 },
+  { label: 'Accident Claims',   count: 18, amount: '$44,200',  pct: 38 },
+  { label: 'Hospital Claims',   count: 11, amount: '$28,600',  pct: 28 },
+];
 ---
 
 
@@ -13,238 +27,83 @@ import account from '../data/employerAccount.json';
 
   <div class="page-grid">
 
-    <!-- ── CMS: CTA Strip (full width) ── -->
-    <div class="comp comp-cms span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/cta-strip" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Campaign Management · Active until May 15</span>
-        </div>
-        <span class="opti-badge">✦ Auto-expires</span>
-      </div>
-      <div class="comp-body">
-        <div class="cta-strip">
-          <p class="cta-strip-message"><strong>Open enrollment closes May 15</strong> — remind your employees to review coverage and enroll before the deadline.</p>
-          <div class="cta-strip-actions">
-            <a href="#" class="cta-strip-secondary">View Enrollment Guide</a>
-            <a href="#" class="cta-strip-primary">Start Enrollment</a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <CTAStrip
+      message="<strong>Open enrollment closes May 15</strong> — remind your employees to review coverage and enroll before the deadline."
+      primaryCtaLabel="Start Enrollment"
+      primaryCtaUrl="#"
+      secondaryCtaLabel="View Enrollment Guide"
+      secondaryCtaUrl="#"
+      source="Optimizely — Campaign Management · Active until May 15"
+    />
 
-    <!-- ── CMS: Renewal Alert (full width) ── -->
-    <div class="comp comp-cms span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/announcement-banner" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Managed by Account Management Team</span>
-        </div>
-        <span class="opti-badge">✦ Optimizely Content</span>
-      </div>
-      <div class="comp-body">
-        <div class="announcement">
-          <div>
-            <span class="announcement-tag">Renewal Notice</span>
-            <h3>Your Group Renewal is Coming Up — Action Required</h3>
-            <p>Your current benefit plan renews on {account.renewalDate}. Schedule a review with your account rep to discuss options.</p>
-          </div>
-          <a href="#" class="announcement-cta">Schedule Review →</a>
-        </div>
-      </div>
-    </div>
+    <AnnouncementBanner
+      tag="Renewal Notice"
+      headline="Your Group Renewal is Coming Up — Action Required"
+      body={`Your current benefit plan renews on ${account.renewalDate}. Schedule a review with your account rep to discuss options.`}
+      ctaLabel="Schedule Review →"
+      ctaUrl="#"
+      source="Optimizely — Managed by Account Management Team"
+    />
 
-    <!-- ── Live Data: Stat — Enrolled Employees ── -->
-    <div class="comp comp-data">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>☁️ Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Salesforce</span>
-        </div>
-        <span class="data-source">Stat Card</span>
-      </div>
-      <div class="comp-body">
-        <div class="stat-label-sm">Enrolled Employees</div>
-        <div class="stat-value-lg">{account.enrolled}</div>
-        <div class="stat-sub-sm">{account.enrollmentRate} enrollment rate · {account.waived} waived</div>
-      </div>
-    </div>
+    <StatCard
+      label="Enrolled Employees"
+      value={account.enrolled}
+      sub={`${account.enrollmentRate} enrollment rate · ${account.waived} waived`}
+      sourceIcon="☁️"
+      sourceName="Salesforce"
+    />
 
-    <!-- ── Live Data: Stat — Monthly Premium ── -->
-    <div class="comp comp-data">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
-        </div>
-        <span class="data-source">Stat Card</span>
-      </div>
-      <div class="comp-body">
-        <div class="stat-label-sm">Monthly Premium</div>
-        <div class="stat-value-lg">{account.monthlyPremium}</div>
-        <div class="stat-sub-sm">YTD total: {account.ytdPremium}</div>
-      </div>
-    </div>
+    <StatCard
+      label="Monthly Premium"
+      value={account.monthlyPremium}
+      sub={`YTD total: ${account.ytdPremium}`}
+      sourceIcon="🗄"
+      sourceName="SQL Server"
+    />
 
-    <!-- ── Live Data: Stat — Account Rep ── -->
-    <div class="comp comp-data">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>☁️ Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Salesforce</span>
-        </div>
-        <span class="data-source">Stat Card</span>
-      </div>
-      <div class="comp-body">
-        <div class="stat-label-sm">Your Account Rep</div>
-        <div class="stat-value-lg" style="font-size:1.125rem; margin-top:6px;">{account.accountRep}</div>
-        <div class="stat-sub-sm" style="margin-top:6px;">
-          <a href={`mailto:${account.repEmail}`} style="color:var(--blue); text-decoration:none;">{account.repEmail}</a>
-        </div>
-      </div>
-    </div>
+    <StatCard
+      label="Your Account Rep"
+      value={account.accountRep}
+      sub={`<a href="mailto:${account.repEmail}" style="color:var(--blue); text-decoration:none;">${account.repEmail}</a>`}
+      sourceIcon="☁️"
+      sourceName="Salesforce"
+    />
 
-    <!-- ── Data Table: Enrollment by Product (span 2) ── -->
-    <div class="comp comp-table span-2">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Data Table</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
-        </div>
-        <span class="data-source">🗄 SQL Server</span>
-      </div>
-      <div class="comp-body-flush">
-        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
-          <span class="card-title">Enrollment by Product</span>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Enrolled</th>
-              <th>Monthly Premium</th>
-            </tr>
-          </thead>
-          <tbody>
-            {account.products.map(p => (
-              <tr>
-                <td style="font-weight: 500;">{p.name}</td>
-                <td>{p.enrolled} <span style="color: var(--text-muted); font-size: 0.75rem;">employees</span></td>
-                <td style="font-weight: 500;">{p.premium}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <EnrollmentTable products={account.products} />
 
-    <!-- ── Data: Claims Utilization ── -->
-    <div class="comp comp-table">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
-        </div>
-        <span class="data-source">Chart</span>
-      </div>
-      <div class="comp-body">
-        <div class="card-title" style="margin-bottom:14px;">Claims Utilization (YTD)</div>
-        {[
-          { label: 'Life Claims', count: 2, amount: '$420,000', pct: 85 },
-          { label: 'Critical Illness', count: 5, amount: '$180,000', pct: 62 },
-          { label: 'Accident Claims', count: 18, amount: '$44,200', pct: 38 },
-          { label: 'Hospital Claims', count: 11, amount: '$28,600', pct: 28 },
-        ].map(item => (
-          <div style="margin-bottom: 14px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="font-size: 0.8125rem; font-weight: 500;">{item.label}</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">{item.count} · {item.amount}</span>
-            </div>
-            <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-              <div style={`height: 100%; width: ${item.pct}%; background: var(--blue); border-radius: 3px;`}></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <ClaimsUtilization items={utilizationItems} />
 
-    <!-- ── CMS: Resource Download — Invoice ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/resource-download" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely DAM — Billing Team</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="resource-download">
-          <div class="rd-icon">PDF</div>
-          <div class="rd-body">
-            <div class="rd-tag">Billing Statement</div>
-            <div class="rd-title">April 2024 Premium Invoice</div>
-            <p class="rd-desc">Your monthly group premium statement. Includes itemized premium by product line and enrolled employee count.</p>
-            <div class="rd-meta">186 KB · Generated April 1, 2024</div>
-            <a href="#" class="rd-download">↓ Download PDF</a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ResourceDownload
+      tag="Billing Statement"
+      title="April 2024 Premium Invoice"
+      description="Your monthly group premium statement. Includes itemized premium by product line and enrolled employee count."
+      fileType="PDF"
+      fileSize="186 KB"
+      assetUrl="#"
+      updatedAt="Generated April 1, 2024"
+      source="Optimizely DAM — Billing Team"
+    />
 
-    <!-- ── CMS: Renewal Readiness Guide ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Account Management</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Renewal Prep</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">2024 Renewal Readiness Guide</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Everything you need to prepare for your upcoming group renewal, including census templates.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Renewal Prep"
+      title="2024 Renewal Readiness Guide"
+      description="Everything you need to prepare for your upcoming group renewal, including census templates."
+      source="Optimizely — Account Management"
+    />
 
-    <!-- ── CMS: Enroll For Life Platform ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Account Management</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Enrollment Tool</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Enroll For Life™ Platform</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Self-service enrollment for permanent life products. Now available for your employee group.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Enrollment Tool"
+      title="Enroll For Life™ Platform"
+      description="Self-service enrollment for permanent life products. Now available for your employee group."
+      source="Optimizely — Account Management"
+    />
 
-    <!-- ── CMS: Compliance Notices ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Account Management</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Compliance</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">2024 Compliance Notices</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Required annual notices for group benefit plans. Download and distribute to employees by May 1.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Compliance"
+      title="2024 Compliance Notices"
+      description="Required annual notices for group benefit plans. Download and distribute to employees by May 1."
+      source="Optimizely — Account Management"
+    />
 
   </div>
 

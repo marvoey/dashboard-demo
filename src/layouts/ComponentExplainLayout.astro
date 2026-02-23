@@ -23,7 +23,7 @@ const { title, componentType, owner, description } = Astro.props;
   <div class="explain-shell">
 
     <header class="explain-topbar" style="height: 80px;">
-      <a href="/" onclick="if(history.length>1){event.preventDefault();history.back();}" class="explain-back">← Back to Portal</a>
+      <a href="/" id="back-link" class="explain-back">← Back to Portal</a>
       <a href="/" style="position:absolute; left:50%; transform:translateX(-50%);">
         <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" height="60" style="padding-bottom: 10px"/>
       </a>
@@ -76,6 +76,12 @@ const { title, componentType, owner, description } = Astro.props;
     const saved = localStorage.getItem('portal-font-size');
     if (saved) setSize(parseInt(saved));
     else setSize(DEFAULT);
+
+    document.getElementById('back-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const ref = document.referrer;
+      location.href = (ref && new URL(ref).origin === location.origin) ? ref : '/';
+    });
   </script>
 </body>
 </html>

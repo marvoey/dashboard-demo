@@ -1,0 +1,33 @@
+---
+interface Props {
+  eyebrow: string;
+  headline: string;
+  subtext: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  segment: string;
+  source: string;
+  badge?: string;
+}
+const { eyebrow, headline, subtext, ctaLabel, ctaUrl, segment, source, badge = '✦ Optimizely Targeting' } = Astro.props;
+---
+
+<div class="comp comp-cms span-3">
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <a href="/components/personalized-hero" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
+      <span style="opacity:0.4;">·</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{source}</span>
+    </div>
+    <span class="opti-badge">{badge}</span>
+  </div>
+  <div class="comp-body">
+    <div class="personalized-hero">
+      <span class="ph-targeting-badge">Segment: {segment}</span>
+      <div class="ph-eyebrow">{eyebrow}</div>
+      <h2 class="ph-headline">{headline}</h2>
+      <p class="ph-subtext">{subtext}</p>
+      <a href={ctaUrl} class="ph-cta">{ctaLabel}</a>
+    </div>
+  </div>
+</div>

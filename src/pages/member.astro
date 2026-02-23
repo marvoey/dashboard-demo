@@ -1,6 +1,18 @@
 ---
 import PortalLayout from '../layouts/PortalLayout.astro';
 import policies from '../data/memberPolicies.json';
+import AnnouncementBanner from '../components/cms/AnnouncementBanner.astro';
+import RegulatoryNotice from '../components/cms/RegulatoryNotice.astro';
+import ResourceDownload from '../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../components/cms/SpotlightCard.astro';
+import PolicyList from '../components/data/PolicyList.astro';
+import ClaimsList from '../components/data/ClaimsList.astro';
+
+const claims = [
+  { type: 'Critical Illness — Diagnosis Benefit', submittedDate: 'Feb 14, 2024', amount: '$50,000', status: 'Paid'      as const },
+  { type: 'Accident Insurance — ER Visit',        submittedDate: 'Jan 22, 2024', amount: '$1,500',  status: 'In Review' as const },
+  { type: 'Hospital Indemnity — Inpatient Stay',  submittedDate: 'Dec 5, 2023',  amount: '$2,400',  status: 'Paid'      as const },
+];
 ---
 
 
@@ -13,198 +25,59 @@ import policies from '../data/memberPolicies.json';
 
   <div class="page-grid">
 
-    <!-- ── CMS: Open Enrollment Banner (full width) ── -->
-    <div class="comp comp-cms span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/announcement-banner" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Managed by Marketing</span>
-        </div>
-        <span class="opti-badge">✦ Optimizely Content</span>
-      </div>
-      <div class="comp-body">
-        <div class="announcement">
-          <div>
-            <span class="announcement-tag">Open Enrollment</span>
-            <h3>Your Open Enrollment Window Closes April 30th</h3>
-            <p>Review your coverage and make changes before the deadline. New accident insurance option available this year.</p>
-          </div>
-          <a href="#" class="announcement-cta">Review Coverage →</a>
-        </div>
-      </div>
-    </div>
+    <AnnouncementBanner
+      tag="Open Enrollment"
+      headline="Your Open Enrollment Window Closes April 30th"
+      body="Review your coverage and make changes before the deadline. New accident insurance option available this year."
+      ctaLabel="Review Coverage →"
+      ctaUrl="#"
+      source="Optimizely — Managed by Marketing"
+    />
 
-    <!-- ── CMS: Regulatory Notice (full width) ── -->
-    <div class="comp comp-cms span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/regulatory-notice" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Legal &amp; Compliance · Notice IL-2024-03</span>
-        </div>
-        <span class="opti-badge">✦ Jurisdiction-Targeted</span>
-      </div>
-      <div class="comp-body">
-        <div class="regulatory-notice">
-          <span class="rn-icon">⚠</span>
-          <div class="rn-body">
-            <div class="rn-title">Illinois Insurance Disclosure</div>
-            <p class="rn-text">Pursuant to Illinois insurance code §215 ILCS 5/143, Trustmark Life Insurance Company is required to inform policyholders that this policy is governed by the laws of the state of Illinois. Benefits are subject to the terms and conditions outlined in your certificate of coverage. For questions regarding your specific policy terms, contact member services at 1-800-918-8877.</p>
-            <div class="rn-meta">Notice IL-2024-03 · Effective January 1, 2024 · Expires December 31, 2024</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <RegulatoryNotice
+      noticeId="Notice IL-2024-03"
+      title="Illinois Insurance Disclosure"
+      body="Pursuant to Illinois insurance code §215 ILCS 5/143, Trustmark Life Insurance Company is required to inform policyholders that this policy is governed by the laws of the state of Illinois. Benefits are subject to the terms and conditions outlined in your certificate of coverage. For questions regarding your specific policy terms, contact member services at 1-800-918-8877."
+      effectiveDate="January 1, 2024"
+      expiryDate="December 31, 2024"
+      source="Optimizely — Legal & Compliance · Notice IL-2024-03"
+    />
 
-    <!-- ── Data Table: My Active Policies (span 2) ── -->
-    <div class="comp comp-table span-2">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Data Table</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
-        </div>
-        <span class="data-source">🗄 SQL Server</span>
-      </div>
-      <div class="comp-body-flush">
-        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
-          <span class="card-title">My Active Policies</span>
-        </div>
-        {policies.map(p => (
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border);">
-            <div>
-              <div style="font-size: 13.5px; font-weight: 500; color: var(--navy);">{p.product}</div>
-              <div class="mono" style="margin-top: 2px;">{p.policyId}</div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-size: 0.875rem; font-weight: 600; color: var(--navy);">{p.premium}</div>
-              <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 2px;">Coverage: {p.coverageAmount}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <PolicyList policies={policies} />
 
-    <!-- ── Data Table: Recent Claims ── -->
-    <div class="comp comp-table">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Data Table</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
-        </div>
-        <span class="data-source">🗄 SQL Server</span>
-      </div>
-      <div class="comp-body-flush">
-        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
-          <span class="card-title">Recent Claims</span>
-        </div>
-        <div style="padding: 0 16px;">
-          <div class="claim-row">
-            <div>
-              <div class="claim-type">Critical Illness — Diagnosis Benefit</div>
-              <div class="claim-date">Submitted Feb 14, 2024</div>
-            </div>
-            <div style="text-align: right;">
-              <div class="claim-amount">$50,000</div>
-              <span class="status status-active" style="margin-top: 4px; display: inline-flex;">Paid</span>
-            </div>
-          </div>
-          <div class="claim-row">
-            <div>
-              <div class="claim-type">Accident Insurance — ER Visit</div>
-              <div class="claim-date">Submitted Jan 22, 2024</div>
-            </div>
-            <div style="text-align: right;">
-              <div class="claim-amount">$1,500</div>
-              <span class="status status-pending" style="margin-top: 4px; display: inline-flex;">In Review</span>
-            </div>
-          </div>
-          <div class="claim-row">
-            <div>
-              <div class="claim-type">Hospital Indemnity — Inpatient Stay</div>
-              <div class="claim-date">Submitted Dec 5, 2023</div>
-            </div>
-            <div style="text-align: right;">
-              <div class="claim-amount">$2,400</div>
-              <span class="status status-active" style="margin-top: 4px; display: inline-flex;">Paid</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ClaimsList claims={claims} />
 
-    <!-- ── CMS: Resource Download — Benefits Summary ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/resource-download" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely DAM — Content Team</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="resource-download">
-          <div class="rd-icon">PDF</div>
-          <div class="rd-body">
-            <div class="rd-tag">Benefits Summary</div>
-            <div class="rd-title">Your 2024 Benefit Summary</div>
-            <p class="rd-desc">A plain-language summary of all your active Trustmark coverages, benefit amounts, and how to file a claim.</p>
-            <div class="rd-meta">894 KB · Updated January 15, 2024</div>
-            <a href="#" class="rd-download">↓ Download PDF</a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ResourceDownload
+      tag="Benefits Summary"
+      title="Your 2024 Benefit Summary"
+      description="A plain-language summary of all your active Trustmark coverages, benefit amounts, and how to file a claim."
+      fileType="PDF"
+      fileSize="894 KB"
+      assetUrl="#"
+      updatedAt="Updated January 15, 2024"
+      source="Optimizely DAM — Content Team"
+    />
 
-    <!-- ── CMS: Understanding Your LTC Benefit ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Marketing / HealthFitness</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Guide</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Understanding Your LTC Benefit</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">How to access long-term care services under your Life+Care® policy.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Guide"
+      title="Understanding Your LTC Benefit"
+      description="How to access long-term care services under your Life+Care® policy."
+      source="Optimizely — Marketing / HealthFitness"
+    />
 
-    <!-- ── CMS: HealthFitness Spring Challenge ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Marketing / HealthFitness</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Wellness</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">HealthFitness: Spring Challenge</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Join the company wellness challenge. Log activity to earn rewards through April.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Wellness"
+      title="HealthFitness: Spring Challenge"
+      description="Join the company wellness challenge. Log activity to earn rewards through April."
+      source="Optimizely — Marketing / HealthFitness"
+    />
 
-    <!-- ── CMS: How to File a Claim ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Marketing / HealthFitness</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">FAQ</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">How to File a Claim</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Step-by-step guide for submitting accident, illness, and hospital claims online.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="FAQ"
+      title="How to File a Claim"
+      description="Step-by-step guide for submitting accident, illness, and hospital claims online."
+      source="Optimizely — Marketing / HealthFitness"
+    />
 
   </div>
 

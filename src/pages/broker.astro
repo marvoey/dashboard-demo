@@ -1,6 +1,12 @@
 ---
 import PortalLayout from '../layouts/PortalLayout.astro';
 import activeCases from '../data/activeCases.json';
+import PersonalizedHero from '../components/cms/PersonalizedHero.astro';
+import AnnouncementBanner from '../components/cms/AnnouncementBanner.astro';
+import ResourceDownload from '../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../components/cms/SpotlightCard.astro';
+import StatCard from '../components/data/StatCard.astro';
+import ActiveCasesTable from '../components/data/ActiveCasesTable.astro';
 
 const totalEmployees = activeCases.reduce((sum, c) => sum + c.employees, 0);
 const activeCount = activeCases.filter(c => c.status === 'Active').length;
@@ -17,222 +23,82 @@ const renewalDue = activeCases.filter(c => c.status === 'Renewal Due').length;
 
   <div class="page-grid">
 
-    <!-- ── CMS: Personalized Hero (full width) ── -->
-    <div class="comp comp-cms span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/personalized-hero" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Targeted by Segment</span>
-        </div>
-        <span class="opti-badge">✦ Optimizely Targeting</span>
-      </div>
-      <div class="comp-body">
-        <div class="personalized-hero">
-          <span class="ph-targeting-badge">Segment: broker</span>
-          <div class="ph-eyebrow">Q2 2024 · Broker Portal</div>
-          <h2 class="ph-headline">Two new products are open for Q2 case submissions</h2>
-          <p class="ph-subtext">Life+Care® Hybrid and enhanced Critical Illness riders are now available. Submit new cases before the Q2 deadline to lock in current rates for your clients.</p>
-          <a href="#" class="ph-cta">View Product Updates</a>
-        </div>
-      </div>
-    </div>
+    <PersonalizedHero
+      eyebrow="Q2 2024 · Broker Portal"
+      headline="Two new products are open for Q2 case submissions"
+      subtext="Life+Care® Hybrid and enhanced Critical Illness riders are now available. Submit new cases before the Q2 deadline to lock in current rates for your clients."
+      ctaLabel="View Product Updates"
+      ctaUrl="#"
+      segment="broker"
+      source="Optimizely — Targeted by Segment"
+    />
 
-    <!-- ── CMS: Announcement Banner (full width) ── -->
-    <div class="comp comp-cms span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/announcement-banner" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Managed by Marketing</span>
-        </div>
-        <span class="opti-badge">✦ Optimizely Content</span>
-      </div>
-      <div class="comp-body">
-        <div class="announcement">
-          <div>
-            <span class="announcement-tag">Q2 Product Update</span>
-            <h3>New Life+Care® Hybrid Product Now Available for Enrollment</h3>
-            <p>Trustmark Life+Care® is now open for Q2 case submissions. Enhanced LTC benefit riders available for groups 50+.</p>
-          </div>
-          <a href="#" class="announcement-cta">View Details →</a>
-        </div>
-      </div>
-    </div>
+    <AnnouncementBanner
+      tag="Q2 Product Update"
+      headline="New Life+Care® Hybrid Product Now Available for Enrollment"
+      body="Trustmark Life+Care® is now open for Q2 case submissions. Enhanced LTC benefit riders available for groups 50+."
+      ctaLabel="View Details →"
+      ctaUrl="#"
+      source="Optimizely — Managed by Marketing"
+    />
 
-    <!-- ── Live Data: Stat — Active Cases ── -->
-    <div class="comp comp-data">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>⚡ Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">V3locity API</span>
-        </div>
-        <span class="data-source">Stat Card</span>
-      </div>
-      <div class="comp-body">
-        <div class="stat-label-sm">Active Cases</div>
-        <div class="stat-value-lg">{activeCases.length}</div>
-        <div class="stat-sub-sm">{activeCount} active · {renewalDue} renewal due</div>
-      </div>
-    </div>
+    <StatCard
+      label="Active Cases"
+      value={activeCases.length}
+      sub={`${activeCount} active · ${renewalDue} renewal due`}
+      sourceIcon="⚡"
+      sourceName="V3locity API"
+    />
 
-    <!-- ── Live Data: Stat — Covered Employees ── -->
-    <div class="comp comp-data">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">SQL Server</span>
-        </div>
-        <span class="data-source">Stat Card</span>
-      </div>
-      <div class="comp-body">
-        <div class="stat-label-sm">Total Covered Employees</div>
-        <div class="stat-value-lg">{totalEmployees.toLocaleString()}</div>
-        <div class="stat-sub-sm">Across all employer groups</div>
-      </div>
-    </div>
+    <StatCard
+      label="Total Covered Employees"
+      value={totalEmployees.toLocaleString()}
+      sub="Across all employer groups"
+      sourceIcon="🗄"
+      sourceName="SQL Server"
+    />
 
-    <!-- ── Live Data: Stat — Monthly Premium ── -->
-    <div class="comp comp-data">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>⚡ Live Data</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">V3locity API</span>
-        </div>
-        <span class="data-source">Stat Card</span>
-      </div>
-      <div class="comp-body">
-        <div class="stat-label-sm">Monthly Premium Volume</div>
-        <div class="stat-value-lg">$94,240</div>
-        <div class="stat-sub-sm">+12% vs prior quarter</div>
-      </div>
-    </div>
+    <StatCard
+      label="Monthly Premium Volume"
+      value="$94,240"
+      sub="+12% vs prior quarter"
+      sourceIcon="⚡"
+      sourceName="V3locity API"
+    />
 
-    <!-- ── Data Table: Active Cases (full width) ── -->
-    <div class="comp comp-table span-3">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <span>🗄 Data Table</span>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">V3locity API + SQL Server</span>
-        </div>
-        <div style="display:flex; gap:6px;">
-          <span class="data-source">⚡ V3locity API</span>
-          <span class="data-source">🗄 SQL Server</span>
-        </div>
-      </div>
-      <div class="comp-body-flush">
-        <div style="padding: 14px 16px; border-bottom: 1px solid var(--border);">
-          <span class="card-title">Active Cases & Policy Status</span>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Case ID</th>
-              <th>Employer</th>
-              <th>Product</th>
-              <th>Employees</th>
-              <th>Premium</th>
-              <th>Renewal</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {activeCases.map(c => (
-              <tr>
-                <td class="mono">{c.caseId}</td>
-                <td style="font-weight: 500;">{c.employer}</td>
-                <td style="color: var(--text-muted);">{c.product}</td>
-                <td>{c.employees}</td>
-                <td style="font-weight: 500;">{c.premium}</td>
-                <td class="mono">{c.renewalDate}</td>
-                <td>
-                  <span class={`status ${
-                    c.status === 'Active' ? 'status-active' :
-                    c.status === 'Renewal Due' ? 'status-renewal' :
-                    'status-pending'
-                  }`}>{c.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <ActiveCasesTable cases={activeCases} />
 
-    <!-- ── CMS: Resource Download — Submission Checklist ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/resource-download" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely DAM — Content Team</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="resource-download">
-          <div class="rd-icon">PDF</div>
-          <div class="rd-body">
-            <div class="rd-tag">Submission Checklist</div>
-            <div class="rd-title">Q2 2024 Case Submission Checklist</div>
-            <p class="rd-desc">Everything required to submit a new group case for Q2. Includes census format, required riders, and submission deadlines.</p>
-            <div class="rd-meta">312 KB · Updated April 1, 2024</div>
-            <a href="#" class="rd-download">↓ Download PDF</a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ResourceDownload
+      tag="Submission Checklist"
+      title="Q2 2024 Case Submission Checklist"
+      description="Everything required to submit a new group case for Q2. Includes census format, required riders, and submission deadlines."
+      fileType="PDF"
+      fileSize="312 KB"
+      assetUrl="#"
+      updatedAt="Updated April 1, 2024"
+      source="Optimizely DAM — Content Team"
+    />
 
-    <!-- ── CMS: Spotlight — Life+Care Hybrid ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Sales & Marketing</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Featured</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Life+Care® Hybrid</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Permanent life with integrated long-term care benefits. New enhanced riders for Q2 available now.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Featured"
+      title="Life+Care® Hybrid"
+      description="Permanent life with integrated long-term care benefits. New enhanced riders for Q2 available now."
+      source="Optimizely — Sales & Marketing"
+    />
 
-    <!-- ── CMS: Spotlight — Critical Illness ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Sales & Marketing</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">High Demand</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Critical Illness</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Lump-sum benefit on diagnosis of covered conditions. Expanded covered conditions list for 2024.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="High Demand"
+      title="Critical Illness"
+      description="Lump-sum benefit on diagnosis of covered conditions. Expanded covered conditions list for 2024."
+      source="Optimizely — Sales & Marketing"
+    />
 
-    <!-- ── CMS: Spotlight — Disability Income ── -->
-    <div class="comp comp-cms">
-      <div class="comp-bar">
-        <div class="comp-bar-left">
-          <a href="/components/spotlight-card" target="_blank" class="comp-explain-link">✦ CMS Content ↗</a>
-          <span style="opacity:0.4;">·</span>
-          <span style="font-weight:500; text-transform:none; letter-spacing:0;">Optimizely — Sales & Marketing</span>
-        </div>
-      </div>
-      <div class="comp-body">
-        <div class="spotlight-item-tag">Training Available</div>
-        <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">Disability Income</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Short and long-term DI solutions. New broker certification course now available in the learning portal.</p>
-      </div>
-    </div>
+    <SpotlightCard
+      tag="Training Available"
+      title="Disability Income"
+      description="Short and long-term DI solutions. New broker certification course now available in the learning portal."
+      source="Optimizely — Sales & Marketing"
+    />
 
   </div>
 
