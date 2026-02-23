@@ -1,0 +1,53 @@
+---
+export interface Props {
+  title: string;
+  componentType: 'cms' | 'data';
+  owner: string;
+  description: string;
+}
+const { title, componentType, owner, description } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | Component Reference | Trustmark Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+</head>
+<body class="explain-body">
+  <div class="explain-shell">
+
+    <header class="explain-topbar">
+      <a onclick="history.back()" class="explain-back">← Back to Portal</a>
+      <a href="/" style="position:absolute; left:50%; transform:translateX(-50%);">
+        <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" height="26" />
+      </a>
+      <span class="explain-breadcrumb">Component Reference</span>
+    </header>
+
+    <div class="explain-hero">
+      <div class="explain-hero-inner">
+        <div class={componentType === 'cms' ? 'badge-cms' : 'badge-data'}>
+          {componentType === 'cms' ? '✦ CMS-Managed Component' : '⚡ Live Data Component'}
+        </div>
+        <h1 class="explain-title">{title}</h1>
+        <p class="explain-desc">{description}</p>
+        <div class="explain-meta">
+          <span class="explain-meta-item">Managed by <strong>{owner}</strong></span>
+          <span class="explain-meta-dot">·</span>
+          <span class="explain-meta-item">Delivered via <strong>Optimizely Content Delivery API</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <main class="explain-main">
+      <slot />
+    </main>
+
+  </div>
+</body>
+</html>

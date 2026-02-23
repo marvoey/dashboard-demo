@@ -1,0 +1,217 @@
+---
+import ComponentExplainLayout from '../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// CTAStrip.tsx
+// A slim, high-visibility campaign bar.
+// Marketing launches it for an enrollment drive or product push,
+// then unpublishes it when the window closes.
+// No engineering ticket. No code deploy. No stale banners.
+
+interface Props {
+  content: {
+    message:             string    // e.g. "Open enrollment closes May 15 — act now."
+    primaryCtaLabel:     string    // e.g. "Start Enrollment"
+    primaryCtaUrl:       string
+    secondaryCtaLabel?:  string    // optional second action
+    secondaryCtaUrl?:    string
+  }
+}
+
+export function CTAStrip({ content }: Props) {
+  return (
+    <div className="cta-strip">
+      <p className="cta-strip-message">{content.message}</p>
+      <div className="cta-strip-actions">
+        {content.secondaryCtaLabel && (
+          <a href={content.secondaryCtaUrl} className="cta-strip-secondary">
+            {content.secondaryCtaLabel}
+          </a>
+        )}
+        <a href={content.primaryCtaUrl} className="cta-strip-primary">
+          {content.primaryCtaLabel}
+        </a>
+      </div>
+    </div>
+  )
+}`;
+
+const queryCode = `// portal/server/cms.ts
+// The activeUntil field is checked server-side.
+// When the campaign window closes, Optimizely returns null
+// and the strip simply doesn't render. Marketing sets the date —
+// engineering never needs to "turn it off."
+
+export async function getCTAStrip(persona: string) {
+  const today = new Date().toISOString().split('T')[0]
+
+  const { data } = await optiClient.request(\`
+    query GetCTAStrip($persona: String!, $today: Date!) {
+      CTAStripCollection(
+        where: {
+          personas:    { contains: $persona }
+          activeUntil: { gte: $today }
+          _metadata:   { status: { eq: "Published" } }
+        }
+        limit: 1
+        orderBy: { _metadata: { published: DESC } }
+      ) {
+        items {
+          message
+          primaryCtaLabel
+          primaryCtaUrl
+          secondaryCtaLabel
+          secondaryCtaUrl
+        }
+      }
+    }
+  \`, { persona, today })
+
+  return data.CTAStripCollection.items[0] ?? null
+}`;
+---
+
+<ComponentExplainLayout
+  title="CTA Strip"
+  componentType="cms"
+  owner="Marketing / Campaign Management"
+  description="A slim, high-visibility campaign bar placed above the dashboard grid. Used for time-sensitive calls to action — open enrollment deadlines, product launches, campaign promotions. Marketing activates and deactivates it entirely from Optimizely, with built-in expiry so it never outlives its campaign window."
+>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>The CTA Strip is the lightest-weight CMS component in the portal. It's a single row — a message and one or two action buttons — but it carries significant campaign weight. It's designed for moments when Marketing needs an urgent nudge: an open enrollment countdown, a product launch push, a deadline reminder.</p>
+      <p>What makes it valuable is the <code>activeUntil</code> field. Marketing sets a date when creating the entry. The portal checks that date on every request. When the date passes, the query returns nothing and the strip is simply absent — no one has to remember to "turn it off," no stale campaign copy persists in production.</p>
+      <p>The strip is also fully optional — if no active strip exists for a persona, the dashboard renders normally without it. The layout doesn't break. The component knows how to be absent.</p>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Content Type Schema — CTAStrip</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Edited by</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">message</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Open enrollment closes May 15 — remind your employees to enroll.</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">primaryCtaLabel</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Start Enrollment</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">primaryCtaUrl</span></td>
+          <td><span class="schema-type">URL</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>/employer/enroll</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">secondaryCtaLabel</span></td>
+          <td><span class="schema-type">Short Text (optional)</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>View Enrollment Guide</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">secondaryCtaUrl</span></td>
+          <td><span class="schema-type">URL (optional)</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>/resources/enrollment-guide</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">personas</span></td>
+          <td><span class="schema-type">Multi-select</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>["employer"]</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">activeUntil</span></td>
+          <td><span class="schema-type">Date</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>2024-05-15 — auto-expires, no manual removal needed</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/CTAStrip.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Fetching from Optimizely Graph</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/cms.ts</span>
+      </div>
+      <div class="code-block">
+        <pre>{queryCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">Marketing creates campaign</div>
+        <div class="flow-desc">Editor authors the strip message, CTAs, target persona, and sets an activeUntil date. Publishes in Optimizely.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Date-filtered query</div>
+        <div class="flow-desc">Portal queries Optimizely with today's date. Only strips with activeUntil &gt;= today are returned.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Strip renders or is absent</div>
+        <div class="flow-desc">If a strip is returned, the component renders. If null, the dashboard renders without it — the layout adjusts gracefully.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">Auto-expires</div>
+        <div class="flow-desc">After activeUntil passes, every query returns null. The strip is gone from every user's view. No one had to "turn it off."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What Editors Can Change Without a Code Deploy</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Zero engineering involvement required for:</div>
+      <ul>
+        <li>Launch a new campaign strip by publishing an entry — visible to users immediately</li>
+        <li>Change the message, CTA label, or destination URL mid-campaign</li>
+        <li>Add or remove the secondary CTA action without touching layout code</li>
+        <li>Extend or shorten a campaign by changing the activeUntil date</li>
+        <li>End a campaign instantly by unpublishing the entry or setting activeUntil to yesterday</li>
+        <li>Run simultaneous campaigns for different personas — one strip per audience</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>

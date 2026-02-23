@@ -1,0 +1,237 @@
+---
+import ComponentExplainLayout from '../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// RegulatoryNotice.tsx
+// Published by Legal & Compliance directly in Optimizely.
+// Jurisdiction-targeted, product-scoped, date-bounded.
+// Engineers never write or modify compliance disclosures.
+// Legal owns the content entirely — the component just renders it.
+
+interface Props {
+  content: {
+    noticeId:      string   // e.g. "IL-2024-03" — for auditability
+    title:         string   // e.g. "Illinois Insurance Disclosure"
+    body:          string   // the regulatory text itself
+    jurisdiction:  string   // e.g. "Illinois"
+    effectiveDate: string   // e.g. "January 1, 2024"
+    expiryDate:    string   // e.g. "December 31, 2024"
+    dismissible:   boolean  // can the user close it?
+  }
+}
+
+export function RegulatoryNotice({ content }: Props) {
+  return (
+    <div className="regulatory-notice">
+      <span className="rn-icon">⚠</span>
+      <div className="rn-body">
+        <div className="rn-title">{content.title}</div>
+        <p className="rn-text">{content.body}</p>
+        <div className="rn-meta">
+          Notice {content.noticeId}
+          &nbsp;·&nbsp; Effective {content.effectiveDate}
+          &nbsp;·&nbsp; Expires {content.expiryDate}
+        </div>
+      </div>
+    </div>
+  )
+}`;
+
+const queryCode = `// portal/server/cms.ts
+// Queries for notices applicable to the user's jurisdiction,
+// active product lines, and current date.
+// Legal publishes, Engineering never touches the content.
+
+export async function getRegulatoryNotices(
+  jurisdiction: string,
+  productLines: string[]
+) {
+  const today = new Date().toISOString().split('T')[0]
+
+  const { data } = await optiClient.request(\`
+    query GetNotices(
+      $jurisdiction: String!
+      $today: Date!
+    ) {
+      RegulatoryNoticeCollection(
+        where: {
+          jurisdictions: { contains: $jurisdiction }
+          expiryDate:    { gte: $today }
+          effectiveDate: { lte: $today }
+          _metadata:     { status: { eq: "Published" } }
+        }
+        orderBy: { effectiveDate: DESC }
+      ) {
+        items {
+          noticeId
+          title
+          body
+          jurisdiction
+          effectiveDate
+          expiryDate
+          dismissible
+        }
+      }
+    }
+  \`, { jurisdiction, today })
+
+  return data.RegulatoryNoticeCollection.items
+}`;
+---
+
+<ComponentExplainLayout
+  title="Regulatory Notice"
+  componentType="cms"
+  owner="Legal &amp; Compliance"
+  description="A jurisdiction-targeted compliance disclosure rendered directly from Optimizely. Legal publishes required notices — state mandates, federal disclosures, product-specific regulatory text — without filing an engineering ticket. The component renders whatever the CMS returns, with built-in effective and expiry dates."
+>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>The Regulatory Notice solves a specific governance problem: regulated insurance content must be accurate, timely, and jurisdiction-specific — but it changes frequently and the people responsible for it (Legal, Compliance) should not need to route every update through engineering.</p>
+      <p>In the traditional model, a compliance attorney emails a developer, the developer hardcodes the disclosure text, the change goes through a review and deploy cycle, and the notice goes live days or weeks later. With this component, Legal logs into Optimizely, creates or updates the notice entry directly, sets its effective date, expiry date, and jurisdiction targeting, and publishes. The portal picks it up on the next request.</p>
+      <p>The <code>noticeId</code> field is important for auditability — it maps to the internal legal reference number, so compliance teams can track exactly which notice is live and when it was published. The component is intentionally read-only and uses <code>dismissible: false</code> by default for required disclosures.</p>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Content Type Schema — RegulatoryNotice</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Edited by</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">noticeId</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>IL-2024-03</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">title</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>Illinois Insurance Disclosure</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">body</span></td>
+          <td><span class="schema-type">Rich Text</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>Pursuant to Illinois insurance code §215 ILCS 5/...</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">jurisdictions</span></td>
+          <td><span class="schema-type">Multi-select</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>["Illinois", "Indiana"]</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">productLines</span></td>
+          <td><span class="schema-type">Multi-select</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>["Life+Care", "Critical Illness"]</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">effectiveDate</span></td>
+          <td><span class="schema-type">Date</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>2024-01-01</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">expiryDate</span></td>
+          <td><span class="schema-type">Date</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>2024-12-31</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">dismissible</span></td>
+          <td><span class="schema-type">Boolean</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>false (required disclosures cannot be dismissed)</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">severity</span></td>
+          <td><span class="schema-type">Single Select</span></td>
+          <td><span class="owner-legal">Legal</span></td>
+          <td>warning | info</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/RegulatoryNotice.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Fetching from Optimizely Graph</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/cms.ts</span>
+      </div>
+      <div class="code-block">
+        <pre>{queryCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">Legal authors</div>
+        <div class="flow-desc">Compliance attorney creates the notice in Optimizely, sets jurisdiction targeting, effective and expiry dates. No developer needed.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Date + jurisdiction filter</div>
+        <div class="flow-desc">Portal queries with the user's jurisdiction and today's date. Only notices within their effective window are returned.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Portal renders notices</div>
+        <div class="flow-desc">All applicable notices for the user's jurisdiction and products render as individual notice components on the dashboard.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">Auto-retires</div>
+        <div class="flow-desc">When expiryDate passes, the notice disappears from all dashboards. Compliance owns the full lifecycle — no engineering touchpoints.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What Legal Can Change Without a Code Deploy</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Zero engineering involvement required for:</div>
+      <ul>
+        <li>Publish a new state-mandated disclosure immediately upon regulation taking effect</li>
+        <li>Update notice body text when regulatory language changes mid-year</li>
+        <li>Add new jurisdictions to an existing notice (e.g. expand IL notice to also cover IN)</li>
+        <li>Set a precise expiry date so the notice retires automatically at year-end</li>
+        <li>Supersede a notice by expiring the old one and publishing a revised version</li>
+        <li>Scope a notice to specific product lines only (Life+Care but not Accident)</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>

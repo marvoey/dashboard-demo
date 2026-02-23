@@ -1,0 +1,213 @@
+---
+import ComponentExplainLayout from '../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// PersonalizedHero.tsx
+// One component shell — three completely different experiences.
+// Optimizely evaluates the visitor's segment at request time and
+// returns the appropriate content. Engineering never writes
+// if (persona === 'broker') show X else show Y.
+
+interface Props {
+  content: {
+    eyebrow:   string   // e.g. "Q2 2024 · Broker Portal"
+    headline:  string   // e.g. "New products ready for Q2 submission"
+    subtext:   string   // e.g. "Two new product lines are now open..."
+    ctaLabel:  string   // e.g. "View Product Updates"
+    ctaUrl:    string   // e.g. "/broker/products"
+    segment:   string   // e.g. "broker" — for the targeting badge
+  }
+}
+
+export function PersonalizedHero({ content }: Props) {
+  return (
+    <div className="personalized-hero">
+      <span className="ph-targeting-badge">
+        Segment: {content.segment}
+      </span>
+      <div className="ph-eyebrow">{content.eyebrow}</div>
+      <h2 className="ph-headline">{content.headline}</h2>
+      <p className="ph-subtext">{content.subtext}</p>
+      <a href={content.ctaUrl} className="ph-cta">
+        {content.ctaLabel}
+      </a>
+    </div>
+  )
+}`;
+
+const queryCode = `// portal/server/cms.ts
+// The query uses Optimizely's visitor intelligence to return
+// the content entry authored for this specific segment.
+// The component code has zero conditional logic — that lives
+// entirely in Optimizely's targeting rules.
+
+export async function getPersonalizedHero(segment: string) {
+  const { data } = await optiClient.request(\`
+    query GetHero($segment: String!) {
+      PersonalizedHeroCollection(
+        where: {
+          segment:   { eq: $segment }
+          _metadata: { status: { eq: "Published" } }
+        }
+        limit: 1
+      ) {
+        items {
+          eyebrow
+          headline
+          subtext
+          ctaLabel
+          ctaUrl
+          segment
+        }
+      }
+    }
+  \`, { segment })
+
+  return data.PersonalizedHeroCollection.items[0] ?? null
+}`;
+---
+
+<ComponentExplainLayout
+  title="Personalized Hero"
+  componentType="cms"
+  owner="Marketing Team"
+  description="A full-width hero block that delivers a completely different message to each persona — same component, different content. Brokers see product news. Employers see account updates. Members see enrollment prompts. The targeting logic lives entirely in Optimizely, not in code."
+>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>The Personalized Hero is the showcase component for Optimizely's audience targeting capabilities. It sits at the top of the dashboard grid and immediately communicates to the user that this portal knows who they are and what's relevant to them.</p>
+      <p>A broker logging in sees messaging about new product submissions available for Q2. An employer sees a message about their upcoming renewal. A member sees an open enrollment prompt. <strong>The React component is identical in all three cases.</strong> What changes is the <code>content</code> object returned by the Optimizely query.</p>
+      <p>This is the key architectural point: <strong>persona-specific logic does not live in code</strong>. There are no <code>if/else</code> branches, no persona checks in JSX. Marketing authors one entry per segment, sets the segment targeting field on each entry, and Optimizely handles the routing. Adding a fourth persona — a say, an advisor — requires only a new content entry, not a code change.</p>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Content Type Schema — PersonalizedHero</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Edited by</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">eyebrow</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Q2 2024 · Broker Portal</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">headline</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>New products ready for Q2 submission</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">subtext</span></td>
+          <td><span class="schema-type">Long Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Two new product lines are now open for broker case submissions...</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">ctaLabel</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>View Product Updates</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">ctaUrl</span></td>
+          <td><span class="schema-type">URL</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>/broker/products</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">segment</span></td>
+          <td><span class="schema-type">Single Select</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>broker | employer | member</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">backgroundVariant</span></td>
+          <td><span class="schema-type">Single Select</span></td>
+          <td><span class="owner-dev">Engineering</span></td>
+          <td>dark-navy (controls CSS class)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/PersonalizedHero.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Fetching from Optimizely Graph</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/cms.ts</span>
+      </div>
+      <div class="code-block">
+        <pre>{queryCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">3 entries authored</div>
+        <div class="flow-desc">Marketing creates one PersonalizedHero entry per segment — broker, employer, member — each with unique copy and CTAs.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Segment field set</div>
+        <div class="flow-desc">Each entry has its segment field set (e.g. "broker"). This is the targeting key — no code involved.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Portal queries by segment</div>
+        <div class="flow-desc">The dashboard page passes the authenticated user's persona to the query. Optimizely returns the matching entry.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">One component, right content</div>
+        <div class="flow-desc">The same PersonalizedHero component renders with different content for each user. Zero conditional logic in code.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What Editors Can Change Without a Code Deploy</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Zero engineering involvement required for:</div>
+      <ul>
+        <li>Rewrite the headline or body copy for any or all segments</li>
+        <li>Change the CTA to point to a different page or campaign landing URL</li>
+        <li>Swap the eyebrow label when a new quarter or campaign cycle starts</li>
+        <li>Temporarily disable the hero for a specific segment by unpublishing that entry</li>
+        <li>A/B test two headline variants against each other using Optimizely Experimentation</li>
+        <li>Add a new segment (e.g. "advisor") by creating a new entry — no code branch needed</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>

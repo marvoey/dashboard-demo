@@ -1,0 +1,227 @@
+---
+import ComponentExplainLayout from '../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// ResourceDownload.tsx
+// Asset metadata and download URL come from Optimizely DAM.
+// The content team manages the file, title, description, and audience.
+// The same component renders different assets per persona — census
+// templates for brokers, invoices for employers, benefit guides for members.
+
+interface Props {
+  content: {
+    tag:         string              // e.g. "Census Template"
+    title:       string              // e.g. "2024 Group Census Template"
+    description: string              // e.g. "Required for all new case submissions..."
+    fileType:    'PDF' | 'XLS' | 'DOC'
+    fileSize:    string              // e.g. "124 KB" — from DAM metadata
+    assetUrl:    string              // Optimizely DAM CDN URL
+    updatedAt:   string              // e.g. "March 15, 2024"
+  }
+}
+
+export function ResourceDownload({ content }: Props) {
+  return (
+    <div className="resource-download">
+      <div className="rd-icon">{content.fileType}</div>
+      <div className="rd-body">
+        <div className="rd-tag">{content.tag}</div>
+        <div className="rd-title">{content.title}</div>
+        <p className="rd-desc">{content.description}</p>
+        <div className="rd-meta">
+          {content.fileSize} · Updated {content.updatedAt}
+        </div>
+        <a href={content.assetUrl} className="rd-download" download>
+          ↓ Download {content.fileType}
+        </a>
+      </div>
+    </div>
+  )
+}`;
+
+const queryCode = `// portal/server/cms.ts
+// Assets live in Optimizely DAM. The CMS entry holds the metadata
+// and audience targeting. The DAM asset URL is resolved at query time
+// and served via Optimizely's CDN — no S3 bucket management, no
+// hardcoded file paths in the codebase.
+
+export async function getResourceDownloads(persona: string) {
+  const { data } = await optiClient.request(\`
+    query GetResources($persona: String!) {
+      ResourceDownloadCollection(
+        where: {
+          personas:  { contains: $persona }
+          _metadata: { status: { eq: "Published" } }
+        }
+        orderBy: { _metadata: { published: DESC } }
+        limit: 3
+      ) {
+        items {
+          tag
+          title
+          description
+          fileType
+          asset {
+            url          # Optimizely DAM CDN URL
+            size         # bytes — displayed as human-readable
+            lastModified # ISO date
+          }
+        }
+      }
+    }
+  \`, { persona })
+
+  return data.ResourceDownloadCollection.items
+}`;
+---
+
+<ComponentExplainLayout
+  title="Resource Download"
+  componentType="cms"
+  owner="Marketing / Content Team"
+  description="A downloadable asset card driven entirely by Optimizely's Digital Asset Manager. The content team uploads files, sets titles and descriptions, and targets them to the right audience. The same component shell renders a census template for a broker, a premium invoice for an employer, or a benefit guide for a member — with no hardcoded file paths in the codebase."
+>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>The Resource Download card surfaces persona-relevant downloadable documents directly on the dashboard. Rather than burying forms, guides, and templates in a static documents section that users have to navigate to, the portal proactively presents the most relevant asset for each user type.</p>
+      <p>The key integration here is with <strong>Optimizely's Digital Asset Manager (DAM)</strong>. The file itself — the PDF, XLS, or DOC — is stored and served from the DAM's CDN. The CMS content entry holds the editorial metadata (title, description, tag, audience targeting) and a reference to the DAM asset. When the content team uploads a new version of a document, they update the asset reference in the CMS entry and republish. The portal immediately serves the new file. <strong>There are no file paths hardcoded anywhere in the application.</strong></p>
+      <p>File size and last-modified date are read directly from the DAM asset metadata, so those fields stay accurate automatically even when a document is replaced.</p>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Content Type Schema — ResourceDownload</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Edited by</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">tag</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Content Team</span></td>
+          <td>Census Template, Billing Statement, Benefit Guide</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">title</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Content Team</span></td>
+          <td>2024 Group Census Template</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">description</span></td>
+          <td><span class="schema-type">Long Text</span></td>
+          <td><span class="owner-editor">Content Team</span></td>
+          <td>Required for all new case submissions. Complete one row per employee...</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">asset</span></td>
+          <td><span class="schema-type">DAM Asset Reference</span></td>
+          <td><span class="owner-editor">Content Team</span></td>
+          <td>census-template-2024.xlsx (uploaded to Optimizely DAM)</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">fileType</span></td>
+          <td><span class="schema-type">Auto (from asset)</span></td>
+          <td><span class="owner-system">System</span></td>
+          <td>XLS, PDF, DOC — derived from the asset extension</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">fileSize</span></td>
+          <td><span class="schema-type">Auto (from asset)</span></td>
+          <td><span class="owner-system">System</span></td>
+          <td>124 KB — always reflects the current file, not a hardcoded string</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">personas</span></td>
+          <td><span class="schema-type">Multi-select</span></td>
+          <td><span class="owner-editor">Content Team</span></td>
+          <td>["broker"] or ["broker", "employer"]</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">lastModified</span></td>
+          <td><span class="schema-type">Auto (from asset)</span></td>
+          <td><span class="owner-system">System</span></td>
+          <td>2024-03-15 — updated automatically when the file is replaced</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/ResourceDownload.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Fetching from Optimizely Graph</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/cms.ts</span>
+      </div>
+      <div class="code-block">
+        <pre>{queryCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">Asset uploaded to DAM</div>
+        <div class="flow-desc">Content team uploads the file to Optimizely DAM. A CDN-backed URL is generated. No S3 bucket management or IT tickets needed.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">CMS entry created</div>
+        <div class="flow-desc">Editor creates a ResourceDownload entry, links to the DAM asset, fills in the title and description, sets persona targeting, and publishes.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Portal fetches by persona</div>
+        <div class="flow-desc">Dashboard queries Optimizely for ResourceDownload entries targeted to the current user's persona. DAM URL and metadata are resolved in the same query.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">Card renders, file downloads</div>
+        <div class="flow-desc">The component renders with the DAM URL as the download href. The file is served from Optimizely's CDN — no application server involved in the download.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What Editors Can Change Without a Code Deploy</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Zero engineering involvement required for:</div>
+      <ul>
+        <li>Upload a revised version of a document — file size and date update automatically</li>
+        <li>Change the title, description, or tag on any downloadable resource</li>
+        <li>Swap the audience — make a broker document available to employers as well</li>
+        <li>Add a brand new document to the portal by creating a new CMS entry</li>
+        <li>Retire a document by unpublishing the entry — it disappears from all dashboards</li>
+        <li>Replace an outdated template with a new version in seconds, not a deploy cycle</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>

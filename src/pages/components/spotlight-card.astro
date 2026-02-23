@@ -1,0 +1,209 @@
+---
+import ComponentExplainLayout from '../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// SpotlightCard.tsx
+// An editorial content card for surfacing products, resources, or
+// promotions. Marketing and Account Management control every word.
+// The component renders whatever Optimizely returns — including
+// optional CTA links that appear only when the editor provides them.
+
+interface Props {
+  content: {
+    tag:         string    // e.g. "Featured", "High Demand", "Training Available"
+    title:       string    // e.g. "Life+Care® Hybrid"
+    description: string    // e.g. "Permanent life with integrated LTC benefits..."
+    ctaLabel?:   string    // optional — only renders if provided
+    ctaUrl?:     string
+  }
+}
+
+export function SpotlightCard({ content }: Props) {
+  return (
+    <div className="spotlight-item">
+      <div className="spotlight-item-tag">{content.tag}</div>
+      <h4>{content.title}</h4>
+      <p>{content.description}</p>
+      {content.ctaLabel && (
+        <a href={content.ctaUrl} className="spotlight-cta">
+          {content.ctaLabel} →
+        </a>
+      )}
+    </div>
+  )
+}`;
+
+const queryCode = `// portal/server/cms.ts
+// Returns up to 3 spotlight cards ordered by editorial priority.
+// Editors set the priority field to control display order.
+
+export async function getSpotlightCards(persona: string) {
+  const { data } = await optiClient.request(\`
+    query GetSpotlights($persona: String!) {
+      SpotlightCardCollection(
+        where: {
+          personas:           { contains: $persona }
+          _metadata: { status: { eq: "Published" } }
+        }
+        limit: 3
+        orderBy: { priority: ASC }
+      ) {
+        items {
+          tag
+          title
+          description
+          ctaLabel
+          ctaUrl
+        }
+      }
+    }
+  \`, { persona })
+
+  return data.SpotlightCardCollection.items
+}`;
+---
+
+<ComponentExplainLayout
+  title="Spotlight Card"
+  componentType="cms"
+  owner="Marketing / Account Management"
+  description="A compact editorial card used to surface products, resources, and promotions in the bottom row of each dashboard. Content teams control what appears, in what order, and for which audience — with no engineering involvement."
+>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>Spotlight Cards occupy the bottom row of every persona dashboard — three per page. They're the primary surface for Marketing and Account Management to promote products, surface relevant resources, and highlight time-sensitive information.</p>
+      <p>The component always renders in the same grid slot. What changes is the <strong>content type and audience</strong>. A broker sees product spotlights — Life+Care, Critical Illness, Disability. An employer sees renewal tools and compliance resources. A member sees benefit guides and wellness content.</p>
+      <p>Editors control display order via a numeric <code>priority</code> field. The highest-priority card for a given persona always appears first. When an editor wants to promote a new product, they simply raise its priority in Optimizely — no code change required.</p>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Content Type Schema — SpotlightCard</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Edited by</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">tag</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Featured, High Demand, Training Available</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">title</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Life+Care® Hybrid</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">description</span></td>
+          <td><span class="schema-type">Long Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Permanent life with integrated long-term care benefits...</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">ctaLabel</span></td>
+          <td><span class="schema-type">Short Text (optional)</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Learn More</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">ctaUrl</span></td>
+          <td><span class="schema-type">URL (optional)</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>/products/lifecare</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">personas</span></td>
+          <td><span class="schema-type">Multi-select</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>["broker"]</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">priority</span></td>
+          <td><span class="schema-type">Number</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>1 (lower = shown first)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/SpotlightCard.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Fetching from Optimizely Graph</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/cms.ts</span>
+      </div>
+      <div class="code-block">
+        <pre>{queryCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">Editor creates cards</div>
+        <div class="flow-desc">Marketing creates SpotlightCard entries in Optimizely, sets persona targeting and priority order.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Content indexed</div>
+        <div class="flow-desc">Optimizely indexes all published SpotlightCard entries, making them queryable by persona and priority.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Portal fetches top 3</div>
+        <div class="flow-desc">Dashboard page queries for the top 3 cards matching the current persona, ordered by priority.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">Cards render</div>
+        <div class="flow-desc">Each card component receives its content object and renders. Optional CTA only appears if the editor provided it.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-section">
+    <div class="explain-section-title">What Editors Can Change Without a Code Deploy</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Zero engineering involvement required for:</div>
+      <ul>
+        <li>Change the tag, title, or description on any card</li>
+        <li>Reorder cards — just update the priority numbers in Optimizely</li>
+        <li>Add or remove the CTA link on any card without touching layout code</li>
+        <li>Retire a card from a persona by removing that persona from targeting</li>
+        <li>Create a broker version and an employer version of the same product spotlight</li>
+        <li>Add a brand new card for a newly launched product — no developer needed</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>

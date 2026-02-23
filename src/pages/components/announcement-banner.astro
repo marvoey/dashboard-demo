@@ -1,0 +1,220 @@
+---
+import ComponentExplainLayout from '../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// AnnouncementBanner.tsx
+// The component shell is defined once by engineering.
+// All visible content — headline, copy, CTA, targeting rules —
+// is authored and published by Marketing in Optimizely CMS.
+
+interface Props {
+  content: {
+    tag:      string   // e.g. "Q2 Product Update"
+    headline: string   // e.g. "New Life+Care® Hybrid Now Available"
+    body:     string   // e.g. "Trustmark Life+Care® is now open..."
+    ctaLabel: string   // e.g. "View Details"
+    ctaUrl:   string   // e.g. "/broker/products/lifecare"
+  }
+}
+
+export function AnnouncementBanner({ content }: Props) {
+  return (
+    <div className="announcement">
+      <div>
+        <span className="announcement-tag">{content.tag}</span>
+        <h3>{content.headline}</h3>
+        <p>{content.body}</p>
+      </div>
+      <a href={content.ctaUrl} className="announcement-cta">
+        {content.ctaLabel} →
+      </a>
+    </div>
+  )
+}`;
+
+const queryCode = `// portal/server/cms.ts
+// Fetches the active banner for a given persona from Optimizely Graph.
+// Runs at the edge on each request — always returns current CMS content.
+
+export async function getAnnouncementBanner(persona: string) {
+  const { data } = await optiClient.request(\`
+    query GetBanner($persona: String!) {
+      AnnouncementBannerCollection(
+        where: {
+          personas:           { contains: $persona }
+          _metadata: { status: { eq: "Published" } }
+        }
+        limit: 1
+        orderBy: { _metadata: { published: DESC } }
+      ) {
+        items {
+          tag
+          headline
+          body
+          ctaLabel
+          ctaUrl
+        }
+      }
+    }
+  \`, { persona })
+
+  return data.AnnouncementBannerCollection.items[0] ?? null
+}`;
+---
+
+<ComponentExplainLayout
+  title="Announcement Banner"
+  componentType="cms"
+  owner="Marketing Team"
+  description="A full-width, high-visibility banner displayed at the top of each persona dashboard. Marketing authors the message, tags, and CTA entirely within Optimizely — no engineering involvement needed to launch or update a campaign."
+>
+
+  <!-- Editorial contract -->
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>The Announcement Banner is the highest-visibility surface on every dashboard. It sits above all data components and is the first thing a broker, employer, or member sees when they log in.</p>
+      <p>The <strong>component shell is static</strong> — engineering defines the layout, styling, and where it renders. The <strong>content is fully dynamic</strong> — Marketing publishes what it says, when it says it, and to whom, directly from Optimizely. When a campaign ends, Marketing unpublishes the entry and the banner disappears. No ticket to engineering, no code deploy.</p>
+      <p>Targeting rules live inside the content entry, not in code. The same component accepts a <code>persona</code> parameter at runtime and Optimizely returns the right content — or nothing, if no published banner targets that segment.</p>
+    </div>
+  </div>
+
+  <!-- Schema -->
+  <div class="explain-section">
+    <div class="explain-section-title">Content Type Schema — AnnouncementBanner</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Edited by</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">tag</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Q2 Product Update</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">headline</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>New Life+Care® Hybrid Now Available for Enrollment</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">body</span></td>
+          <td><span class="schema-type">Long Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>Trustmark Life+Care® is now open for Q2 case submissions...</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">ctaLabel</span></td>
+          <td><span class="schema-type">Short Text</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>View Details</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">ctaUrl</span></td>
+          <td><span class="schema-type">URL</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>/broker/products/lifecare</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">personas</span></td>
+          <td><span class="schema-type">Multi-select</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>["broker"] or ["employer", "member"]</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">activeFrom</span></td>
+          <td><span class="schema-type">Date</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>2024-04-01</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">activeTo</span></td>
+          <td><span class="schema-type">Date</span></td>
+          <td><span class="owner-editor">Marketing</span></td>
+          <td>2024-06-30</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Component code -->
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/AnnouncementBanner.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fetch code -->
+  <div class="explain-section">
+    <div class="explain-section-title">Fetching from Optimizely Graph</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/cms.ts</span>
+      </div>
+      <div class="code-block">
+        <pre>{queryCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery flow -->
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">Marketing authors</div>
+        <div class="flow-desc">Editor fills in fields, sets targeting rules and date range in Optimizely CMS UI. Hits Publish.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Content indexed</div>
+        <div class="flow-desc">Optimizely indexes the entry in its Content Graph, queryable by persona, status, and date.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Portal fetches</div>
+        <div class="flow-desc">On each page request, the portal queries the Content Delivery API with the user's persona as a filter.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">Component renders</div>
+        <div class="flow-desc">The React component receives the content object as a prop and renders it. No hardcoded strings anywhere.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No-redeploy -->
+  <div class="explain-section">
+    <div class="explain-section-title">What Editors Can Change Without a Code Deploy</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Zero engineering involvement required for:</div>
+      <ul>
+        <li>Update the headline, body copy, or CTA label for a new campaign</li>
+        <li>Change the CTA destination URL (e.g. point to a new landing page)</li>
+        <li>Switch targeting to a different persona — show it to employers instead of brokers</li>
+        <li>Set an expiry date so the banner disappears automatically when a campaign ends</li>
+        <li>Schedule a future banner to go live at a specific date and time</li>
+        <li>Create a different version of the banner for each persona simultaneously</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>
