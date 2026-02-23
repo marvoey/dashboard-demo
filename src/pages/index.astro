@@ -1,3 +1,84 @@
 ---
-return Astro.redirect('/broker');
+import PortalLayout from '../layouts/PortalLayout.astro';
+import policies from '../data/memberPolicies.json';
+import AnnouncementBanner from '../components/cms/AnnouncementBanner.astro';
+import RegulatoryNotice from '../components/cms/RegulatoryNotice.astro';
+import ResourceDownload from '../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../components/cms/SpotlightCard.astro';
+import PolicyList from '../components/data/PolicyList.astro';
+import ClaimsList from '../components/data/ClaimsList.astro';
+
+const claims = [
+  { type: 'Critical Illness — Diagnosis Benefit', submittedDate: 'Feb 14, 2024', amount: '$50,000', status: 'Paid'      as const },
+  { type: 'Accident Insurance — ER Visit',        submittedDate: 'Jan 22, 2024', amount: '$1,500',  status: 'In Review' as const },
+  { type: 'Hospital Indemnity — Inpatient Stay',  submittedDate: 'Dec 5, 2023',  amount: '$2,400',  status: 'Paid'      as const },
+];
 ---
+
+
+<PortalLayout title="Member Dashboard" persona="member">
+
+  <div class="page-header">
+    <h1>My Benefits Dashboard</h1>
+    <p>Your active policies and recent claims. Data sourced from Trustmark SQL Server.</p>
+  </div>
+
+  <div class="page-grid">
+
+    <AnnouncementBanner
+      tag="Open Enrollment"
+      headline="Your Open Enrollment Window Closes April 30th"
+      body="Review your coverage and make changes before the deadline. New accident insurance option available this year."
+      ctaLabel="Review Coverage →"
+      ctaUrl="#"
+      source="Optimizely — Managed by Marketing"
+    />
+
+    <RegulatoryNotice
+      noticeId="Notice IL-2024-03"
+      title="Illinois Insurance Disclosure"
+      body="Pursuant to Illinois insurance code §215 ILCS 5/143, Trustmark Life Insurance Company is required to inform policyholders that this policy is governed by the laws of the state of Illinois. Benefits are subject to the terms and conditions outlined in your certificate of coverage. For questions regarding your specific policy terms, contact member services at 1-800-918-8877."
+      effectiveDate="January 1, 2024"
+      expiryDate="December 31, 2024"
+      source="Optimizely — Legal & Compliance · Notice IL-2024-03"
+    />
+
+    <PolicyList policies={policies} />
+
+    <ClaimsList claims={claims} />
+
+    <ResourceDownload
+      tag="Benefits Summary"
+      title="Your 2024 Benefit Summary"
+      description="A plain-language summary of all your active Trustmark coverages, benefit amounts, and how to file a claim."
+      fileType="PDF"
+      fileSize="894 KB"
+      assetUrl="#"
+      updatedAt="Updated January 15, 2024"
+      source="Optimizely DAM — Content Team"
+    />
+
+    <SpotlightCard
+      tag="Guide"
+      title="Understanding Your LTC Benefit"
+      description="How to access long-term care services under your Life+Care® policy."
+      source="Optimizely — Marketing / HealthFitness"
+    />
+
+    <SpotlightCard
+      tag="Wellness"
+      title="HealthFitness: Spring Challenge"
+      description="Join the company wellness challenge. Log activity to earn rewards through April."
+      source="Optimizely — Marketing / HealthFitness"
+    />
+
+    <SpotlightCard
+      tag="FAQ"
+      title="How to File a Claim"
+      description="Step-by-step guide for submitting accident, illness, and hospital claims online."
+      source="Optimizely — Marketing / HealthFitness"
+    />
+
+  </div>
+
+</PortalLayout>
