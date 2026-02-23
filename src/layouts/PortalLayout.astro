@@ -22,7 +22,7 @@ const { title, persona } = Astro.props;
 
     <header class="topbar">
       <a href="/" class="topbar-brand">
-        <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" height="80" style="padding-bottom:20px"/>
+        <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" class="topbar-logo" />
       </a>
 
       <nav class="topbar-persona-switcher">
@@ -32,6 +32,12 @@ const { title, persona } = Astro.props;
       </nav>
 
       <div class="topbar-right">
+
+        <button class="hamburger" id="sidebar-toggle" aria-label="Open navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
         <div class="font-size-control">
           <button class="fs-btn" id="fs-decrease" title="Decrease font size">A−</button>
@@ -54,7 +60,15 @@ const { title, persona } = Astro.props;
       </div>
     </header>
 
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <aside class="sidebar">
+      <div class="sidebar-persona-mobile">
+        <a href="/broker" class={persona === 'broker' ? 'active' : ''}>Broker</a>
+        <a href="/member" class={persona === 'member' ? 'active' : ''}>Member</a>
+        <a href="/employer" class={persona === 'employer' ? 'active' : ''}>Employer</a>
+      </div>
+
       {persona === 'broker' && (
         <>
           <span class="sidebar-section-label">Overview</span>
@@ -127,6 +141,35 @@ const { title, persona } = Astro.props;
     const saved = localStorage.getItem('portal-font-size');
     if (saved) setSize(parseInt(saved));
     else display.textContent = getSize() + 'px';
+
+    // Sidebar drawer toggle
+    const toggle = document.getElementById('sidebar-toggle') as HTMLElement;
+    const overlay = document.getElementById('sidebar-overlay') as HTMLElement;
+    const shell = document.querySelector('.portal-shell') as HTMLElement;
+
+    function openSidebar() {
+      shell?.classList.add('sidebar-open');
+      toggle?.setAttribute('aria-expanded', 'true');
+    }
+    function closeSidebar() {
+      shell?.classList.remove('sidebar-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle?.addEventListener('click', () => {
+      shell?.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
+    });
+    overlay?.addEventListener('click', closeSidebar);
+
+    // Close sidebar on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSidebar();
+    });
+
+    // Close sidebar when navigating (link click inside sidebar)
+    document.querySelector('.sidebar')?.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).tagName === 'A') closeSidebar();
+    });
   </script>
 </body>
 </html>
