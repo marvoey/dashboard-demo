@@ -1,0 +1,219 @@
+---
+import ComponentExplainLayout from '../../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// StatCard.tsx
+// A generic, stateless metric display primitive. StatCard receives
+// data as props and renders it — the parent dashboard component is
+// responsible for the API fetch and passes results down.
+
+interface Props {
+  label:      string          // Metric label (e.g. "Active Cases")
+  value:      string | number // The metric value to display
+  sub?:       string          // Optional supporting text or delta
+  sourceIcon: string          // Emoji icon indicating the data source
+  sourceName: string          // Human-readable data source name
+}
+
+export function StatCard({ label, value, sub, sourceIcon, sourceName }: Props) {
+  // StatCard is a pure display component.
+  // It does not fetch data itself.
+  // See the parent dashboard component for the fetch call.
+  return (
+    <div className="comp comp-data">
+      {/* renders label, value, sub directly from props */}
+    </div>
+  );
+}`;
+
+const fetchCode = `// portal/components/BrokerDashboard.tsx
+// Example: the parent dashboard fetches a stats bundle and passes
+// individual values to each StatCard instance as props.
+
+export function BrokerDashboard() {
+  const [stats, setStats] = useState<BrokerStats | null>(null);
+
+  useEffect(() => {
+    fetch('/api/broker/stats', {
+      headers: { Authorization: \`Bearer \${getSessionToken()}\` }
+    })
+      .then(r => r.json())
+      .then(setStats);
+  }, []);
+
+  return (
+    <>
+      <StatCard
+        label="Active Cases"
+        value={stats?.activeCases ?? '—'}
+        sub="+3 since last month"
+        sourceIcon="⚡"
+        sourceName="V3locity API"
+      />
+      <StatCard
+        label="MTD Premium"
+        value={stats?.mtdPremium ?? '—'}
+        sourceIcon="🗄"
+        sourceName="SQL Server"
+      />
+      <StatCard
+        label="Renewals Due (90 days)"
+        value={stats?.renewalsDue ?? '—'}
+        sourceIcon="⚡"
+        sourceName="V3locity API"
+      />
+    </>
+  );
+}
+
+// GET /api/broker/stats returns:
+// {
+//   activeCases: number,
+//   mtdPremium:  string,
+//   renewalsDue: number,
+//   ...
+// }`;
+---
+
+<ComponentExplainLayout
+  title="Stat Card"
+  componentType="data"
+  owner="Portal Engineering"
+  description="A generic metric display primitive showing a single KPI with a label, value, and optional supporting text. StatCard is stateless — the parent dashboard component owns the API fetch and passes data in as props."
+>
+
+  <!-- What this component does -->
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>StatCard is a reusable display primitive used across all three persona dashboards. It renders a single metric — a label, a large value, and an optional sub-text — along with a source attribution badge identifying where the data came from.</p>
+      <p>Unlike the other data components, <strong>StatCard itself does not fetch data</strong>. It is a pure display component: it receives props and renders them. The parent dashboard component (broker, employer, or member) is responsible for calling the API and passing the result as props to each StatCard instance.</p>
+      <p>This design allows a single API request to populate multiple stat cards in one round-trip, rather than having each card make its own fetch. The <code>sourceIcon</code> and <code>sourceName</code> props document which backing system each stat came from at the call site.</p>
+    </div>
+  </div>
+
+  <!-- Response shape -->
+  <div class="explain-section">
+    <div class="explain-section-title">Component Props — StatCard</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Prop</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">label</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">Required</span></td>
+          <td>Active Cases</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">value</span></td>
+          <td><span class="schema-type">string | number</span></td>
+          <td><span class="owner-editor">Required</span></td>
+          <td>24 or $182,400</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">sub</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">Optional</span></td>
+          <td>+3 since last month</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">sourceIcon</span></td>
+          <td><span class="schema-type">string (emoji)</span></td>
+          <td><span class="owner-editor">Required</span></td>
+          <td>⚡ (V3locity) or 🗄 (SQL Server)</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">sourceName</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">Required</span></td>
+          <td>V3locity API</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Component code -->
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/StatCard.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Where the call is made -->
+  <div class="explain-section">
+    <div class="explain-section-title">Where the Call Is Made</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/BrokerDashboard.tsx → GET /api/broker/stats</span>
+      </div>
+      <div class="code-block">
+        <pre>{fetchCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery flow -->
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">User logs in</div>
+        <div class="flow-desc">Portal authenticates the user. A session token is issued encoding the user's ID and role (broker, employer, or member).</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Dashboard mounts</div>
+        <div class="flow-desc">The persona dashboard renders. The parent dashboard component's <code>useEffect</code> fires, fetching a stats bundle from the appropriate API endpoint.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Parent receives data</div>
+        <div class="flow-desc">The stats API returns a bundle of KPIs from V3locity and/or SQL Server. The parent stores them in <code>useState</code>.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">StatCards render</div>
+        <div class="flow-desc">The parent passes individual values as props to each StatCard. Each card renders its label, value, and source attribution. No CMS layer involved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Engineering controls -->
+  <div class="explain-section">
+    <div class="explain-section-title">What Requires a Code Change</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">StatCard has no non-engineering edit surface. A code deploy is required to:</div>
+      <ul>
+        <li>Change which metrics are shown on a dashboard (requires updating the parent component)</li>
+        <li>Add a new stat card to a persona dashboard</li>
+        <li>Change the layout size or visual styling of the card</li>
+        <li>Add a trend arrow, sparkline, or comparison to a prior period</li>
+        <li>Change the API endpoint that provides the stats bundle</li>
+      </ul>
+      <div class="no-redeploy-title" style="margin-top: 16px;">Updates automatically without a deploy:</div>
+      <ul>
+        <li>The displayed value updates on each page load as the backing source changes</li>
+        <li>Case counts, premium totals, and renewal counts reflect the current state of V3locity and SQL Server</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>

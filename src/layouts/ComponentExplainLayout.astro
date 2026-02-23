@@ -44,7 +44,7 @@ const { title, componentType, owner, description } = Astro.props;
         <div class="explain-meta">
           <span class="explain-meta-item">Managed by <strong>{owner}</strong></span>
           <span class="explain-meta-dot">·</span>
-          <span class="explain-meta-item">Delivered via <strong>Optimizely Content Delivery API</strong></span>
+          <span class="explain-meta-item">Delivered via <strong>{componentType === 'cms' ? 'Optimizely Content Delivery API' : 'Direct API Call'}</strong></span>
         </div>
       </div>
     </div>

@@ -1,0 +1,220 @@
+---
+import ComponentExplainLayout from '../../../layouts/ComponentExplainLayout.astro';
+
+const componentCode = `// ActiveCasesTable.tsx
+// Fetches the authenticated broker's full case portfolio from the
+// Trustmark API gateway on mount. No CMS layer — this is live
+// operational data sourced from V3locity and SQL Server.
+
+import { useState, useEffect } from 'react';
+
+interface Case {
+  caseId:      string   // Internal V3locity case identifier
+  employer:    string   // Employer group name
+  product:     string   // Product line (e.g. "Group Term Life")
+  employees:   number   // Enrolled employee count
+  premium:     string   // Formatted monthly premium
+  renewalDate: string   // Policy renewal date (ISO 8601)
+  status:      'Active' | 'Renewal Due' | 'Pending'
+}
+
+export function ActiveCasesTable() {
+  const [cases, setCases] = useState<Case[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/broker/cases', {
+      headers: { Authorization: \`Bearer \${getSessionToken()}\` }
+    })
+      .then(r => r.json())
+      .then(({ cases }) => setCases(cases))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="comp comp-table span-3">Loading…</div>;
+
+  return (
+    <div className="comp comp-table span-3">
+      {/* table rows rendered from cases[] */}
+    </div>
+  );
+}`;
+
+const fetchCode = `// portal/server/broker.ts
+// The API route that backs this component. Runs server-side.
+// Pulls case list from V3locity (status + renewal) and SQL Server
+// (premium totals + employee counts) and merges them before responding.
+
+export async function GET(req: Request) {
+  const brokerId = getAuthenticatedBrokerId(req);
+
+  const [v3Cases, sqlCases] = await Promise.all([
+    v3locityClient.getCasesForBroker(brokerId),    // active + renewal status
+    db.query(
+      'SELECT case_id, employer_name, product, enrolled_count, monthly_premium ' +
+      'FROM broker_cases WHERE broker_id = @brokerId',
+      { brokerId }
+    ),
+  ]);
+
+  const cases = mergeCaseData(v3Cases, sqlCases);
+  return Response.json({ cases });
+}`;
+---
+
+<ComponentExplainLayout
+  title="Active Cases Table"
+  componentType="data"
+  owner="Portal Engineering"
+  description="A full-width data table showing a broker's entire active case portfolio with real-time status from V3locity and enrollment data from SQL Server. Content is never authored in a CMS — everything displayed is pulled live on each page load."
+>
+
+  <!-- What this component does -->
+  <div class="explain-section">
+    <div class="explain-section-title">What This Component Does</div>
+    <div class="explain-prose">
+      <p>The Active Cases Table is the primary operational surface on the broker dashboard. It lists every case the authenticated broker owns, with live status from the V3locity policy administration system and enrollment/premium figures from the internal SQL Server warehouse.</p>
+      <p>This component has <strong>no CMS counterpart</strong>. There are no fields for Marketing or Content teams to edit — every row reflects the current state of a real policy. When a case renews, its row updates automatically on the next page load. When a new case is bound, it appears without any engineering action.</p>
+      <p>The component fetches at mount time using the broker's session token as the auth credential. The API gateway enforces row-level security, so each broker sees only their own book of business.</p>
+    </div>
+  </div>
+
+  <!-- Response shape -->
+  <div class="explain-section">
+    <div class="explain-section-title">API Response Shape — /api/broker/cases</div>
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Source</th>
+          <th>Example value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="schema-field">caseId</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">V3locity</span></td>
+          <td>TM-2024-00412</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">employer</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">SQL Server</span></td>
+          <td>Riverstone Manufacturing LLC</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">product</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">V3locity</span></td>
+          <td>Group Term Life</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">employees</span></td>
+          <td><span class="schema-type">number</span></td>
+          <td><span class="owner-editor">SQL Server</span></td>
+          <td>142</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">premium</span></td>
+          <td><span class="schema-type">string</span></td>
+          <td><span class="owner-editor">SQL Server</span></td>
+          <td>$4,820/mo</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">renewalDate</span></td>
+          <td><span class="schema-type">string (ISO 8601)</span></td>
+          <td><span class="owner-editor">V3locity</span></td>
+          <td>2025-01-01</td>
+        </tr>
+        <tr>
+          <td><span class="schema-field">status</span></td>
+          <td><span class="schema-type">enum</span></td>
+          <td><span class="owner-editor">V3locity</span></td>
+          <td>"Active" | "Renewal Due" | "Pending"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Component code -->
+  <div class="explain-section">
+    <div class="explain-section-title">React Component</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TSX</span>
+        <span class="code-block-file">components/ActiveCasesTable.tsx</span>
+      </div>
+      <div class="code-block">
+        <pre>{componentCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- API route -->
+  <div class="explain-section">
+    <div class="explain-section-title">Where the Call Is Made</div>
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang">TypeScript</span>
+        <span class="code-block-file">server/broker.ts → GET /api/broker/cases</span>
+      </div>
+      <div class="code-block">
+        <pre>{fetchCode}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery flow -->
+  <div class="explain-section">
+    <div class="explain-section-title">Delivery Flow</div>
+    <div class="delivery-flow">
+      <div class="flow-step">
+        <div class="flow-num">Step 1</div>
+        <div class="flow-title">Broker logs in</div>
+        <div class="flow-desc">Portal authenticates the broker. A session token is issued, encoding the broker's ID and role. No CMS interaction.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 2</div>
+        <div class="flow-title">Component mounts</div>
+        <div class="flow-desc">The broker dashboard renders. The ActiveCasesTable React component's <code>useEffect</code> fires immediately on mount.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 3</div>
+        <div class="flow-title">Direct API call</div>
+        <div class="flow-desc">The component calls <code>/api/broker/cases</code> with the session token. The gateway merges data from V3locity and SQL Server and returns the case list.</div>
+        <span class="flow-arrow">›</span>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">Step 4</div>
+        <div class="flow-title">Component renders</div>
+        <div class="flow-desc">The response populates <code>useState</code>. The table re-renders with live data. Every row reflects the current state of a real policy.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Engineering controls -->
+  <div class="explain-section">
+    <div class="explain-section-title">What Requires a Code Change</div>
+    <div class="no-redeploy">
+      <div class="no-redeploy-title">Unlike CMS components, this component has no non-engineering edit surface. A code deploy is required to:</div>
+      <ul>
+        <li>Add or remove a column from the table</li>
+        <li>Change the API endpoint or query parameters</li>
+        <li>Modify the row-level security logic or broker ID lookup</li>
+        <li>Change how status badges are styled or which statuses trigger them</li>
+        <li>Alter the sort order or pagination of cases</li>
+      </ul>
+      <div class="no-redeploy-title" style="margin-top: 16px;">Updates automatically without a deploy:</div>
+      <ul>
+        <li>New cases appear as soon as they are bound in V3locity</li>
+        <li>Status changes (Active → Renewal Due) reflect on next page load</li>
+        <li>Premium and enrollment counts update when the SQL warehouse syncs</li>
+      </ul>
+    </div>
+  </div>
+
+</ComponentExplainLayout>
