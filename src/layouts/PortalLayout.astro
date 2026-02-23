@@ -1,4 +1,6 @@
 ---
+import '../styles/portal.css';
+
 export interface Props {
   title: string;
   persona: 'broker' | 'member' | 'employer';
@@ -14,7 +16,6 @@ const { title, persona } = Astro.props;
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/src/styles/portal.css" />
 </head>
 <body>
   <div class="portal-shell">
