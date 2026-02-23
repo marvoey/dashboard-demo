@@ -1,0 +1,114 @@
+---
+import '../styles/portal.css';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found | Trustmark Benefits Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="not-found-shell">
+
+    <header class="topbar" style="grid-column: 1;">
+      <a href="/" class="topbar-brand">
+        <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" class="topbar-logo" />
+      </a>
+    </header>
+
+    <main class="not-found-main">
+      <div class="not-found-code">404</div>
+      <h1 class="not-found-title">Page not found</h1>
+      <p class="not-found-body">
+        The page you're looking for doesn't exist or may have moved.
+      </p>
+      <div class="not-found-actions">
+        <a href="/broker" class="not-found-btn-primary">Go to Broker Dashboard</a>
+        <a href="/member" class="not-found-btn-secondary">Member Dashboard</a>
+        <a href="/employer" class="not-found-btn-secondary">Employer Dashboard</a>
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>
+
+<style>
+  .not-found-shell {
+    display: grid;
+    grid-template-rows: 64px 1fr;
+    min-height: 100vh;
+    background: var(--surface);
+  }
+
+  .not-found-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .not-found-code {
+    font-size: 6rem;
+    font-weight: 600;
+    letter-spacing: -4px;
+    line-height: 1;
+    color: var(--border);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .not-found-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -0.4px;
+    margin-bottom: 10px;
+  }
+
+  .not-found-body {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    max-width: 360px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .not-found-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .not-found-btn-primary {
+    background: var(--navy);
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .not-found-btn-primary:hover { background: var(--navy-mid); }
+
+  .not-found-btn-secondary {
+    background: var(--white);
+    color: var(--navy);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 9px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .not-found-btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+</style>

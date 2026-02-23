@@ -1,0 +1,16 @@
+---
+interface Props {
+  gap?: string;
+  align?: 'start' | 'center' | 'end' | 'stretch';
+}
+const { gap, align } = Astro.props;
+
+const style = [
+  gap   ? `--row-gap: ${gap}`     : undefined,
+  align ? `--row-align: ${align}` : undefined,
+].filter(Boolean).join('; ');
+---
+
+<div class="layout-row" style={style || undefined}>
+  <slot />
+</div>

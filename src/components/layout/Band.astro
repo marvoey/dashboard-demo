@@ -1,0 +1,12 @@
+---
+interface Props {
+  label?: string;
+  gap?: string;
+}
+const { label, gap } = Astro.props;
+---
+
+<div class="band" style={gap ? `--band-gap: ${gap}` : undefined}>
+  {label && <div class="band-label">{label}</div>}
+  <slot />
+</div>
