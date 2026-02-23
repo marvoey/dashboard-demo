@@ -22,12 +22,16 @@ const { title, componentType, owner, description } = Astro.props;
 <body class="explain-body">
   <div class="explain-shell">
 
-    <header class="explain-topbar">
+    <header class="explain-topbar" style="height: 80px;">
       <a onclick="history.back()" class="explain-back">← Back to Portal</a>
       <a href="/" style="position:absolute; left:50%; transform:translateX(-50%);">
-        <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" height="26" />
+        <img src="/logo-with-tagline-inverse.webp" alt="Trustmark Benefits" height="60" style="padding-bottom: 10px"/>
       </a>
-      <span class="explain-breadcrumb">Component Reference</span>
+      <div class="font-size-control">
+        <button class="fs-btn" id="fs-decrease" title="Decrease font size">A−</button>
+        <span class="fs-display" id="fs-display">18px</span>
+        <button class="fs-btn" id="fs-increase" title="Increase font size">A+</button>
+      </div>
     </header>
 
     <div class="explain-hero">
@@ -50,5 +54,28 @@ const { title, componentType, owner, description } = Astro.props;
     </main>
 
   </div>
+  <script>
+    const MIN = 12, MAX = 32, STEP = 1, DEFAULT = 18;
+    const display = document.getElementById('fs-display') as HTMLElement;
+
+    function getSize(): number {
+      return parseInt(document.documentElement.style.fontSize) ||
+             parseInt(getComputedStyle(document.documentElement).fontSize);
+    }
+
+    function setSize(px: number): void {
+      const clamped = Math.min(Math.max(px, MIN), MAX);
+      document.documentElement.style.fontSize = clamped + 'px';
+      display.textContent = clamped + 'px';
+      localStorage.setItem('portal-font-size', String(clamped));
+    }
+
+    (document.getElementById('fs-increase') as HTMLElement).addEventListener('click', () => setSize(getSize() + STEP));
+    (document.getElementById('fs-decrease') as HTMLElement).addEventListener('click', () => setSize(getSize() - STEP));
+
+    const saved = localStorage.getItem('portal-font-size');
+    if (saved) setSize(parseInt(saved));
+    else setSize(DEFAULT);
+  </script>
 </body>
 </html>
