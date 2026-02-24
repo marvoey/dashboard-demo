@@ -1,4 +1,23 @@
 ---
+// DATA SOURCE: V3locity API (case status, renewal date) + SQL Server (premium, employee count)
+//
+// FETCH CALL — GET /api/broker/cases
+// Called on component mount with the broker's session token.
+// The API gateway merges two sources before responding:
+//
+//   const [v3Cases, sqlCases] = await Promise.all([
+//     v3locityClient.getCasesForBroker(brokerId),   // status + renewalDate
+//     db.query(
+//       'SELECT case_id, employer_name, product, enrolled_count, monthly_premium ' +
+//       'FROM broker_cases WHERE broker_id = @brokerId',
+//       { brokerId }
+//     ),                                             // employer, employees, premium
+//   ]);
+//   return Response.json({ cases: mergeCaseData(v3Cases, sqlCases) });
+//
+// Row-level security is enforced by the gateway — each broker
+// receives only their own book of business.
+
 interface Case {
   caseId: string;
   employer: string;
@@ -12,6 +31,8 @@ interface Props {
   cases: Case[];
 }
 const { cases } = Astro.props;
+// ↑ prototype: hardcoded array passed from the page
+// ↑ production: populated from GET /api/broker/cases response via useState
 ---
 
 <div class="comp comp-table span-3">

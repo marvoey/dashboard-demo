@@ -1,4 +1,29 @@
 ---
+// DATA SOURCE: SQL Server (employer_enrollments table, aggregated by product)
+//
+// FETCH CALL — GET /api/employer/enrollment
+// Called on component mount with the employer's session token.
+//
+//   useEffect(() => {
+//     fetch('/api/employer/enrollment', {
+//       headers: { Authorization: `Bearer ${getSessionToken()}` }
+//     })
+//       .then(r => r.json())
+//       .then(({ products }) => setProducts(products));
+//   }, []);
+//
+// SERVER-SIDE QUERY:
+//   SELECT product_name,
+//          COUNT(DISTINCT employee_id) AS enrolled_count,
+//          SUM(monthly_premium)        AS total_premium
+//   FROM employer_enrollments
+//   WHERE employer_id = @employerId AND status = 'active'
+//   GROUP BY product_name
+//   ORDER BY total_premium DESC
+//
+// Filters to active enrollments only. New product lines appear automatically
+// as soon as enrollment records exist for them — no code change needed.
+
 interface Product {
   name: string;
   enrolled: number;
@@ -8,6 +33,8 @@ interface Props {
   products: Product[];
 }
 const { products } = Astro.props;
+// ↑ prototype: hardcoded array passed from the page
+// ↑ production: populated from GET /api/employer/enrollment response via useState
 ---
 
 <div class="comp comp-table span-2">

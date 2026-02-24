@@ -1,4 +1,27 @@
 ---
+// DATA SOURCE: SQL Server (member_policies table)
+//
+// FETCH CALL — GET /api/member/policies?status=active
+// Called on component mount with the member's session token.
+//
+//   useEffect(() => {
+//     fetch('/api/member/policies?status=active', {
+//       headers: { Authorization: `Bearer ${getSessionToken()}` }
+//     })
+//       .then(r => r.json())
+//       .then(({ policies }) => setPolicies(policies));
+//   }, []);
+//
+// SERVER-SIDE QUERY:
+//   SELECT product_name, policy_id, member_premium, coverage_amount
+//   FROM member_policies
+//   WHERE member_id = @memberId AND policy_status = @status
+//   ORDER BY product_name ASC
+//
+// Filters to active policies by default. Terminated or lapsed policies
+// are excluded unless the status query parameter is changed.
+// Row-level security enforced by the gateway — members see only their own policies.
+
 interface Policy {
   product: string;
   policyId: string;
@@ -9,6 +32,8 @@ interface Props {
   policies: Policy[];
 }
 const { policies } = Astro.props;
+// ↑ prototype: hardcoded array passed from the page
+// ↑ production: populated from GET /api/member/policies response via useState
 ---
 
 <div class="comp comp-table span-2">

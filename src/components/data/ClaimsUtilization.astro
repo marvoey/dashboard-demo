@@ -1,4 +1,30 @@
 ---
+// DATA SOURCE: SQL Server (employer_claims table, aggregated by product line)
+//
+// FETCH CALL — GET /api/employer/claims/utilization?period=ytd
+// Called on component mount with the employer's session token.
+//
+//   useEffect(() => {
+//     fetch('/api/employer/claims/utilization?period=ytd', {
+//       headers: { Authorization: `Bearer ${getSessionToken()}` }
+//     })
+//       .then(r => r.json())
+//       .then(({ utilization }) => setItems(utilization));
+//   }, []);
+//
+// SERVER-SIDE QUERY:
+//   SELECT product_line,
+//          COUNT(*)             AS claim_count,
+//          SUM(claim_amount)    AS total_amount,
+//          AVG(utilization_pct) AS avg_pct
+//   FROM employer_claims
+//   WHERE employer_id = @employerId AND period_key = @period
+//   GROUP BY product_line
+//   ORDER BY total_amount DESC
+//
+// The `pct` field (0–100) drives the bar width via inline CSS.
+// Adding a new product line requires only that claims data exists — no code change.
+
 interface UtilizationItem {
   label: string;
   count: number;
@@ -9,6 +35,8 @@ interface Props {
   items: UtilizationItem[];
 }
 const { items } = Astro.props;
+// ↑ prototype: hardcoded array passed from the page
+// ↑ production: populated from GET /api/employer/claims/utilization response via useState
 ---
 
 <div class="comp comp-table">

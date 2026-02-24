@@ -1,4 +1,26 @@
 ---
+// DATA SOURCE: SQL Server (member_claims table)
+//
+// FETCH CALL — GET /api/member/claims/recent?limit=5
+// Called on component mount with the member's session token.
+//
+//   useEffect(() => {
+//     fetch('/api/member/claims/recent?limit=5', {
+//       headers: { Authorization: `Bearer ${getSessionToken()}` }
+//     })
+//       .then(r => r.json())
+//       .then(({ claims }) => setClaims(claims));
+//   }, []);
+//
+// SERVER-SIDE QUERY:
+//   SELECT TOP 5 claim_type, submitted_date, claim_amount, claim_status
+//   FROM member_claims
+//   WHERE member_id = @memberId
+//   ORDER BY submitted_date DESC
+//
+// Returns the 5 most recent claims ordered by submission date.
+// Row-level security enforced by the gateway — members see only their own claims.
+
 interface Claim {
   type: string;
   submittedDate: string;
@@ -9,6 +31,8 @@ interface Props {
   claims: Claim[];
 }
 const { claims } = Astro.props;
+// ↑ prototype: hardcoded array passed from the page
+// ↑ production: populated from GET /api/member/claims/recent response via useState
 ---
 
 <div class="comp comp-table">

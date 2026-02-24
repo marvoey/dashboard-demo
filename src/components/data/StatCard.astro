@@ -1,4 +1,25 @@
 ---
+// DATA SOURCE: StatCard does not fetch data itself.
+// It is a pure display primitive — the parent dashboard component
+// owns the API fetch and passes individual values down as props.
+//
+// FETCH CALL LIVES IN: the persona dashboard component (e.g. BrokerDashboard.tsx)
+//
+//   useEffect(() => {
+//     fetch('/api/broker/stats', {           // or /api/employer/stats, /api/member/stats
+//       headers: { Authorization: `Bearer ${getSessionToken()}` }
+//     })
+//       .then(r => r.json())
+//       .then(setStats);
+//   }, []);
+//
+// The stats bundle is then split across multiple StatCard instances:
+//   <StatCard label="Active Cases"  value={stats?.activeCases} sourceIcon="⚡" sourceName="V3locity API" />
+//   <StatCard label="MTD Premium"   value={stats?.mtdPremium}  sourceIcon="🗄" sourceName="SQL Server" />
+//
+// This pattern batches all KPIs into a single round-trip rather than
+// having each card make its own fetch.
+
 interface Props {
   label: string;
   value: string | number;
@@ -7,6 +28,8 @@ interface Props {
   sourceName: string;
 }
 const { label, value, sub, sourceIcon, sourceName } = Astro.props;
+// ↑ prototype: values passed as props from the page
+// ↑ production: values passed as props from the parent dashboard after its fetch resolves
 ---
 
 <div class="comp comp-data">
