@@ -35,8 +35,8 @@ const { products } = Astro.props;
         {products.map(p => (
           <tr>
             <td style="font-weight: 500;">{p.name}</td>
-            <td>{p.enrolled} <span style="color: var(--text-muted); font-size: 0.75rem;">employees</span></td>
-            <td style="font-weight: 500;">{p.premium}</td>
+            <td><span data-live>{p.enrolled}</span> <span style="color: var(--text-muted); font-size: 0.75rem;">employees</span></td>
+            <td style="font-weight: 500;" data-live>{p.premium}</td>
           </tr>
         ))}
       </tbody>

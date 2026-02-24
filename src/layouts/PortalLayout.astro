@@ -173,5 +173,69 @@ const { title, persona } = Astro.props;
       if ((e.target as HTMLElement).tagName === 'A') closeSidebar();
     });
   </script>
+
+  <script>
+    // Live data simulation — nudges [data-live] text values and [data-live-bar] widths
+    (function () {
+      function parseNum(text: string) {
+        const m = text.trim().match(/^([^0-9\-]*)([0-9,]+(?:\.[0-9]*)?)(.*)$/);
+        if (!m) return null;
+        const raw = parseFloat(m[2].replace(/,/g, ''));
+        if (isNaN(raw)) return null;
+        const decimals = (m[2].split('.')[1] ?? '').length;
+        return { raw, prefix: m[1], suffix: m[3], hasCommas: m[2].includes(','), decimals };
+      }
+
+      function fmtNum(p: NonNullable<ReturnType<typeof parseNum>>, val: number): string {
+        const fixed = val.toFixed(p.decimals);
+        const [int, dec] = fixed.split('.');
+        const intFmt = p.hasCommas ? int.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : int;
+        return p.prefix + (dec !== undefined ? `${intFmt}.${dec}` : intFmt) + p.suffix;
+      }
+
+      function nudge(val: number): number {
+        if (val === 0) return 0;
+        const up = Math.random() < 0.5;
+        if (val < 50) return Math.max(0, val + (up ? 1 : -1));
+        const pct = 0.004 + Math.random() * 0.014;
+        return Math.max(0, val + val * pct * (up ? 1 : -1));
+      }
+
+      function flash(el: HTMLElement): void {
+        el.classList.remove('live-flash');
+        void el.offsetWidth; // restart animation
+        el.classList.add('live-flash');
+      }
+
+      function schedule(fn: () => void): void {
+        setTimeout(fn, 2500 + Math.random() * 4000);
+      }
+
+      // Text / currency values
+      document.querySelectorAll<HTMLElement>('[data-live]').forEach(el => {
+        function tick(): void {
+          const p = parseNum(el.textContent ?? '');
+          if (p) {
+            const nv = p.decimals === 0 ? Math.round(nudge(p.raw)) : nudge(p.raw);
+            el.textContent = fmtNum(p, nv);
+            flash(el);
+          }
+          schedule(tick);
+        }
+        setTimeout(tick, 1000 + Math.random() * 4000);
+      });
+
+      // Bar widths
+      document.querySelectorAll<HTMLElement>('[data-live-bar]').forEach(el => {
+        let cur = parseFloat(el.dataset.liveBar ?? '0');
+        function tick(): void {
+          cur = Math.min(99, Math.max(3, cur + (Math.random() * 4 - 2)));
+          el.style.width = cur.toFixed(1) + '%';
+          schedule(tick);
+        }
+        setTimeout(tick, 1000 + Math.random() * 4000);
+      });
+    })();
+  </script>
 </body>
 </html>

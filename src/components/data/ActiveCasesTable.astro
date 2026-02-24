@@ -48,8 +48,8 @@ const { cases } = Astro.props;
             <td class="mono">{c.caseId}</td>
             <td style="font-weight: 500;">{c.employer}</td>
             <td style="color: var(--text-muted);">{c.product}</td>
-            <td>{c.employees}</td>
-            <td style="font-weight: 500;">{c.premium}</td>
+            <td data-live>{c.employees}</td>
+            <td style="font-weight: 500;" data-live>{c.premium}</td>
             <td class="mono">{c.renewalDate}</td>
             <td>
               <span class={`status ${

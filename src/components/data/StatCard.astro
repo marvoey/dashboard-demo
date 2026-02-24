@@ -20,7 +20,7 @@ const { label, value, sub, sourceIcon, sourceName } = Astro.props;
   </div>
   <div class="comp-body">
     <div class="stat-label-sm">{label}</div>
-    <div class="stat-value-lg">{value}</div>
+    <div class="stat-value-lg" data-live>{value}</div>
     {sub && <div class="stat-sub-sm" set:html={sub}></div>}
   </div>
 </div>

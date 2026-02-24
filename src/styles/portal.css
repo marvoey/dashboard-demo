@@ -1026,3 +1026,13 @@ tr:hover td { background: var(--blue-light); }
   /* Code blocks: scrollable */
   .code-block pre { overflow-x: auto; }
 }
+
+/* ===== Live data animation ===== */
+@keyframes liveFlash {
+  0%   { background-color: rgba(0, 90, 175, 0.15); }
+  100% { background-color: transparent; }
+}
+.live-flash {
+  animation: liveFlash 0.7s ease-out;
+  border-radius: 2px;
+}

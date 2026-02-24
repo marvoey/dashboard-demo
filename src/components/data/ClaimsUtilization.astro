@@ -26,10 +26,10 @@ const { items } = Astro.props;
       <div style="margin-bottom: 14px;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
           <span style="font-size: 0.8125rem; font-weight: 500;">{item.label}</span>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">{item.count} · {item.amount}</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);"><span data-live>{item.count}</span> · <span data-live>{item.amount}</span></span>
         </div>
         <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-          <div style={`height: 100%; width: ${item.pct}%; background: var(--blue); border-radius: 3px;`}></div>
+          <div data-live-bar={item.pct} style={`height: 100%; width: ${item.pct}%; background: var(--blue); border-radius: 3px; transition: width 0.8s ease;`}></div>
         </div>
       </div>
     ))}

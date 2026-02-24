@@ -31,7 +31,7 @@ const { policies } = Astro.props;
           <div class="mono" style="margin-top: 2px;">{p.policyId}</div>
         </div>
         <div style="text-align: right;">
-          <div style="font-size: 0.875rem; font-weight: 600; color: var(--navy);">{p.premium}</div>
+          <div style="font-size: 0.875rem; font-weight: 600; color: var(--navy);" data-live>{p.premium}</div>
           <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 2px;">Coverage: {p.coverageAmount}</div>
         </div>
       </div>

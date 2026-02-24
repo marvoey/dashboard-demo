@@ -32,7 +32,7 @@ const { claims } = Astro.props;
             <div class="claim-date">Submitted {c.submittedDate}</div>
           </div>
           <div style="text-align: right;">
-            <div class="claim-amount">{c.amount}</div>
+            <div class="claim-amount" data-live>{c.amount}</div>
             <span class={`status ${c.status === 'Paid' ? 'status-active' : 'status-pending'}`} style="margin-top: 4px; display: inline-flex;">{c.status}</span>
           </div>
         </div>
