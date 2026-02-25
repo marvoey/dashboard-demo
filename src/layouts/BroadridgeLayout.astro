@@ -3,7 +3,7 @@ import '../styles/portal.css';
 
 export interface Props {
   title: string;
-  persona: 'investor-relations' | 'advisor' | 'operations' | 'fund-admin' | 'compliance';
+  persona: 'investor-relations' | 'advisor' | 'operations' | 'fund-admin' | 'compliance' | 'demo';
 }
 const { title, persona } = Astro.props;
 ---
@@ -31,6 +31,7 @@ const { title, persona } = Astro.props;
         <a href="/broadridge/operations"         class={`persona-btn ${persona === 'operations'         ? 'active' : ''}`}>Operations</a>
         <a href="/broadridge/fund-admin"         class={`persona-btn ${persona === 'fund-admin'         ? 'active' : ''}`}>Fund Admin</a>
         <a href="/broadridge/compliance"         class={`persona-btn ${persona === 'compliance'         ? 'active' : ''}`}>Compliance</a>
+        <a href="/demo"                          class={`persona-btn ${persona === 'demo'                  ? 'active' : ''}`}>Demo</a>
         <a href="/" class="persona-btn">← Trustmark Demo</a>
       </nav>
 
@@ -55,6 +56,7 @@ const { title, persona } = Astro.props;
             {persona === 'operations'         && 'RH'}
             {persona === 'fund-admin'         && 'SK'}
             {persona === 'compliance'         && 'DP'}
+            {persona === 'demo'               && 'DM'}
           </div>
           <span class="user-name">
             {persona === 'investor-relations' && 'Lisa Chen'}
@@ -62,6 +64,7 @@ const { title, persona } = Astro.props;
             {persona === 'operations'         && 'Robert Hayes'}
             {persona === 'fund-admin'         && 'Sarah Kim'}
             {persona === 'compliance'         && 'David Park'}
+            {persona === 'demo'               && 'Demo User'}
           </span>
         </div>
       </div>
@@ -76,6 +79,7 @@ const { title, persona } = Astro.props;
         <a href="/broadridge/operations"         class={persona === 'operations'         ? 'active' : ''}>Ops</a>
         <a href="/broadridge/fund-admin"         class={persona === 'fund-admin'         ? 'active' : ''}>Fund</a>
         <a href="/broadridge/compliance"         class={persona === 'compliance'         ? 'active' : ''}>Comp</a>
+        <a href="/demo"                          class={persona === 'demo'                ? 'active' : ''}>Demo</a>
       </div>
 
       {persona === 'investor-relations' && (
@@ -165,6 +169,16 @@ const { title, persona } = Astro.props;
           <span class="sidebar-section-label">Support</span>
           <a href="#" class="sidebar-link"><span class="sidebar-icon">💬</span> Help</a>
           <a href="#" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+        </>
+      )}
+
+      {persona === 'demo' && (
+        <>
+          <span class="sidebar-section-label">Demo Dashboard</span>
+          <a href="/demo" class="sidebar-link active"><span class="sidebar-icon">🎯</span> Overview</a>
+          <span class="sidebar-section-label">Content</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📄</span> Pages</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🧩</span> Components</a>
         </>
       )}
     </aside>
