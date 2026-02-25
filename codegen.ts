@@ -21,6 +21,9 @@ const config: CodegenConfig = {
         includeDirectives: true,
         useTypeImports: true,
       }
+    },
+    "__generated/graphql.schema.json": {
+      plugins: ["introspection"]
     }
   }
 }

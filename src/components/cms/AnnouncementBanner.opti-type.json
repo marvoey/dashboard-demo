@@ -1,0 +1,65 @@
+{
+  "key": "AnnouncementBanner",
+  "displayName": "Announcement Banner",
+  "description": "Full-width banner for announcements with a tag, headline, body text, and CTA",
+  "baseType": "Component",
+  "compositionBehaviors": ["elementEnabled"],
+  "properties": {
+    "tag": {
+      "type": "string",
+      "displayName": "Tag",
+      "description": "Category label displayed above the headline",
+      "required": true,
+      "localized": false,
+      "group": "Content",
+      "sortOrder": 10,
+      "enum": [
+        { "value": "Update", "displayName": "Update" },
+        { "value": "Alert", "displayName": "Alert" },
+        { "value": "News", "displayName": "News" },
+        { "value": "Reminder", "displayName": "Reminder" }
+      ],
+      "indexingType": "queryable"
+    },
+    "headline": {
+      "type": "string",
+      "displayName": "Headline",
+      "description": "Main heading of the announcement",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 20,
+      "maxLength": 150,
+      "indexingType": "searchable"
+    },
+    "body": {
+      "type": "richText",
+      "displayName": "Body",
+      "description": "Body text of the announcement. Supports inline HTML.",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 30,
+      "indexingType": "searchable"
+    },
+    "ctaLabel": {
+      "type": "string",
+      "displayName": "CTA Label",
+      "description": "Text for the call-to-action button",
+      "required": true,
+      "localized": true,
+      "group": "CTA",
+      "sortOrder": 40,
+      "maxLength": 50
+    },
+    "ctaUrl": {
+      "type": "url",
+      "displayName": "CTA URL",
+      "description": "Destination URL for the call-to-action button",
+      "required": true,
+      "localized": false,
+      "group": "CTA",
+      "sortOrder": 50
+    }
+  }
+}

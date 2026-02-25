@@ -1,0 +1,562 @@
+---
+import '../../styles/portal.css';
+
+const dashboards = [
+  {
+    href:        '/broadridge/investor-relations',
+    title:       'Investor Relations Portal',
+    persona:     'IR Manager',
+    user:        'Lisa Chen',
+    icon:        '🗳️',
+    color:       '#0E9A8A',
+    colorLight:  'rgba(14,154,138,0.12)',
+    desc:        'Manage proxy campaigns, track shareholder vote responses, and publish annual meeting materials via Notice & Access.',
+    sources:     ['Broadridge ICS', 'SEC EDGAR'],
+    tags:        ['Proxy Voting', 'Annual Meetings', 'Shareholder Comms'],
+  },
+  {
+    href:        '/broadridge/advisor',
+    title:       'Advisor Portal',
+    persona:     'Financial Advisor',
+    user:        'Michael Torres',
+    icon:        '📈',
+    color:       '#2A6FC9',
+    colorLight:  'rgba(42,111,201,0.12)',
+    desc:        'Review your full book of business, monitor client portfolio performance, manage orders, and access model portfolios.',
+    sources:     ['Portfolio Data Hub', 'Broadridge CRM'],
+    tags:        ['Wealth Management', 'Portfolio Analytics', 'Model Marketplace'],
+  },
+  {
+    href:        '/broadridge/operations',
+    title:       'Operations Dashboard',
+    persona:     'Operations Manager',
+    user:        'Robert Hayes',
+    icon:        '⚙️',
+    color:       '#7C3AED',
+    colorLight:  'rgba(124,58,237,0.12)',
+    desc:        'Monitor daily trade settlement, manage the exception queue, track STP rates, and prepare for T+1 settlement.',
+    sources:     ['Broadridge BPS', 'DTC / NSCC'],
+    tags:        ['Trade Settlement', 'Exception Mgmt', 'T+1 Ready'],
+  },
+  {
+    href:        '/broadridge/fund-admin',
+    title:       'Fund Administration Portal',
+    persona:     'Fund Administrator',
+    user:        'Sarah Kim',
+    icon:        '💹',
+    color:       '#0D2B4E',
+    colorLight:  'rgba(13,43,78,0.10)',
+    desc:        'Process daily NAVs, manage the fund register, track subscription and redemption flows, and run regulatory reports.',
+    sources:     ['Broadridge Fund Services', 'Advent Geneva'],
+    tags:        ['NAV Processing', 'Transfer Agency', 'Fund Accounting'],
+  },
+  {
+    href:        '/broadridge/compliance',
+    title:       'Compliance Dashboard',
+    persona:     'Compliance Officer',
+    user:        'David Park',
+    icon:        '🏛️',
+    color:       '#B45309',
+    colorLight:  'rgba(180,83,9,0.10)',
+    desc:        'Track the regulatory filing queue across SEC, FINRA, CFTC, and FinCEN. Monitor alerts, overdue items, and AML flags.',
+    sources:     ['Broadridge Compliance', 'Regulatory Feeds'],
+    tags:        ['RegBI', 'AML / KYC', 'Regulatory Filings'],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Broadridge Demo Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body class="portal-body">
+
+  <!-- Top bar -->
+  <header class="portal-header">
+    <div class="portal-header-inner">
+      <div class="portal-brand">
+        <span class="portal-brand-name">Broadridge</span>
+        <span class="portal-brand-sub">Financial Solutions</span>
+      </div>
+      <div class="portal-header-right">
+        <span class="portal-demo-badge">Interactive Demo</span>
+        <a href="/" class="portal-back-link">← Back to Trustmark Demo</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="portal-hero">
+    <div class="portal-hero-inner">
+      <div class="portal-hero-eyebrow">Platform Showcase · 2024</div>
+      <h1 class="portal-hero-headline">Five Portals. One Platform.</h1>
+      <p class="portal-hero-sub">
+        Explore Broadridge's financial technology platform through five persona-specific dashboards —
+        each powered by real data integrations across the Broadridge ecosystem.
+      </p>
+      <div class="portal-hero-stats">
+        <div class="portal-hero-stat">
+          <span class="portal-hero-stat-value">5</span>
+          <span class="portal-hero-stat-label">Personas</span>
+        </div>
+        <div class="portal-hero-stat-divider"></div>
+        <div class="portal-hero-stat">
+          <span class="portal-hero-stat-value">8+</span>
+          <span class="portal-hero-stat-label">Data Sources</span>
+        </div>
+        <div class="portal-hero-stat-divider"></div>
+        <div class="portal-hero-stat">
+          <span class="portal-hero-stat-value">Live</span>
+          <span class="portal-hero-stat-label">Animated Data</span>
+        </div>
+        <div class="portal-hero-stat-divider"></div>
+        <div class="portal-hero-stat">
+          <span class="portal-hero-stat-value">CMS</span>
+          <span class="portal-hero-stat-label">Powered by Optimizely</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard cards -->
+  <main class="portal-main">
+
+    <div class="portal-section-label">Select a Dashboard</div>
+
+    <div class="portal-grid">
+      {dashboards.map(d => (
+        <a href={d.href} class="portal-card-link">
+          <article class="portal-card">
+
+            <div class="portal-card-header" style={`background:${d.colorLight}; border-bottom:2px solid ${d.color}22;`}>
+              <div class="portal-card-icon" style={`background:${d.color}; color:white;`}>{d.icon}</div>
+              <div>
+                <div class="portal-card-persona">{d.persona}</div>
+                <h2 class="portal-card-title">{d.title}</h2>
+              </div>
+            </div>
+
+            <div class="portal-card-body">
+              <div class="portal-card-user">
+                <div class="portal-card-avatar" style={`background:${d.color};`}>
+                  {d.user.split(' ').map(w => w[0]).join('')}
+                </div>
+                <span class="portal-card-user-name">Logged in as <strong>{d.user}</strong></span>
+              </div>
+
+              <p class="portal-card-desc">{d.desc}</p>
+
+              <div class="portal-card-sources">
+                {d.sources.map(s => (
+                  <span class="portal-card-source">🗄 {s}</span>
+                ))}
+              </div>
+            </div>
+
+            <div class="portal-card-footer">
+              <div class="portal-card-tags">
+                {d.tags.map(t => (
+                  <span class="portal-card-tag">{t}</span>
+                ))}
+              </div>
+              <span class="portal-card-cta" style={`color:${d.color};`}>Open →</span>
+            </div>
+
+          </article>
+        </a>
+      ))}
+    </div>
+
+    <!-- Platform strip -->
+    <div class="portal-platform-strip">
+      <div class="portal-platform-label">Integrated platforms in this demo</div>
+      <div class="portal-platform-list">
+        {['Broadridge ICS', 'Broadridge BPS', 'Portfolio Data Hub', 'Fund Services', 'Compliance Platform', 'Advent Geneva', 'DTC / NSCC', 'SEC EDGAR', 'Optimizely CMS'].map(p => (
+          <span class="portal-platform-item">{p}</span>
+        ))}
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
+
+<style>
+  /* ── Base ── */
+  .portal-body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F1F5F9;
+    color: #1A2533;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  /* ── Header ── */
+  .portal-header {
+    background: #002360;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .portal-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .portal-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .portal-brand-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.3px;
+  }
+  .portal-brand-sub {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .portal-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .portal-demo-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: rgba(14,154,138,0.2);
+    border: 1px solid rgba(14,154,138,0.4);
+    color: #5EEAD4;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .portal-back-link {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .portal-back-link:hover { color: white; }
+
+  /* ── Hero ── */
+  .portal-hero {
+    background: linear-gradient(160deg, #001A3A 0%, #0D2B4E 50%, #1B4B82 100%);
+    padding: 64px 32px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .portal-hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(42,111,201,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .portal-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 10%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(14,154,138,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .portal-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .portal-hero-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #5EEAD4;
+    margin-bottom: 14px;
+  }
+  .portal-hero-headline {
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.8px;
+    line-height: 1.1;
+    margin: 0 0 16px;
+  }
+  .portal-hero-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+    max-width: 580px;
+    margin: 0 0 36px;
+  }
+  .portal-hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .portal-hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 28px;
+  }
+  .portal-hero-stat:first-child { padding-left: 0; }
+  .portal-hero-stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.3px;
+    line-height: 1;
+  }
+  .portal-hero-stat-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: rgba(255,255,255,0.45);
+  }
+  .portal-hero-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255,255,255,0.12);
+    flex-shrink: 0;
+  }
+
+  /* ── Main ── */
+  .portal-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+  .portal-section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748B;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  /* ── Grid ── */
+  .portal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  /* last card (5th) — center it in row of 3 */
+  .portal-card-link:last-child:nth-child(3n - 2) {
+    grid-column: 2;
+  }
+
+  /* ── Card ── */
+  .portal-card-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .portal-card {
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 1px 4px rgba(13,43,78,0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .portal-card-link:hover .portal-card {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(13,43,78,0.13);
+  }
+
+  .portal-card-header {
+    padding: 18px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .portal-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.375rem;
+    flex-shrink: 0;
+  }
+  .portal-card-persona {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #64748B;
+    margin-bottom: 3px;
+  }
+  .portal-card-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #0D2B4E;
+    letter-spacing: -0.2px;
+    margin: 0;
+  }
+
+  .portal-card-body {
+    padding: 16px 20px;
+    flex: 1;
+    border-top: 1px solid #E2E8F0;
+  }
+  .portal-card-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .portal-card-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+  }
+  .portal-card-user-name {
+    font-size: 0.75rem;
+    color: #64748B;
+  }
+  .portal-card-user-name strong {
+    color: #1A2533;
+    font-weight: 600;
+  }
+  .portal-card-desc {
+    font-size: 0.8125rem;
+    color: #64748B;
+    line-height: 1.65;
+    margin: 0 0 14px;
+  }
+  .portal-card-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .portal-card-source {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748B;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .portal-card-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .portal-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .portal-card-tag {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #EBF3FB;
+    color: #2A6FC9;
+    border: 1px solid #BFDBFE;
+    border-radius: 3px;
+    padding: 2px 6px;
+  }
+  .portal-card-cta {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── Platform strip ── */
+  .portal-platform-strip {
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 18px 24px;
+  }
+  .portal-platform-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #64748B;
+    margin-bottom: 12px;
+  }
+  .portal-platform-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .portal-platform-item {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #1A2533;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1023px) {
+    .portal-grid { grid-template-columns: repeat(2, 1fr); }
+    .portal-card-link:last-child:nth-child(3n - 2) { grid-column: auto; }
+    .portal-hero-headline { font-size: 2rem; }
+  }
+  @media (max-width: 639px) {
+    .portal-header-inner { padding: 0 16px; }
+    .portal-brand-sub { display: none; }
+    .portal-demo-badge { display: none; }
+    .portal-hero { padding: 40px 16px 48px; }
+    .portal-hero-headline { font-size: 1.625rem; }
+    .portal-hero-stats { flex-wrap: wrap; gap: 16px; }
+    .portal-hero-stat-divider { display: none; }
+    .portal-hero-stat { padding: 0; }
+    .portal-main { padding: 32px 16px 60px; }
+    .portal-grid { grid-template-columns: 1fr; }
+  }
+</style>

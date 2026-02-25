@@ -1,0 +1,278 @@
+---
+import '../styles/portal.css';
+
+export interface Props {
+  title: string;
+  persona: 'investor-relations' | 'advisor' | 'operations' | 'fund-admin' | 'compliance';
+}
+const { title, persona } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | Broadridge Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="portal-shell">
+
+    <header class="topbar">
+      <a href="/broadridge/investor-relations" class="topbar-brand" style="text-decoration:none;">
+        <span style="font-size:1.1rem; font-weight:700; color:white; letter-spacing:-0.3px; font-family:'DM Sans',sans-serif; line-height:1;">Broadridge</span>
+        <span style="font-size:0.625rem; font-weight:600; color:rgba(255,255,255,0.45); letter-spacing:1.2px; text-transform:uppercase; margin-left:8px;">Financial Solutions</span>
+      </a>
+
+      <nav class="topbar-persona-switcher">
+        <a href="/broadridge/investor-relations" class={`persona-btn ${persona === 'investor-relations' ? 'active' : ''}`}>IR Portal</a>
+        <a href="/broadridge/advisor"            class={`persona-btn ${persona === 'advisor'            ? 'active' : ''}`}>Advisor</a>
+        <a href="/broadridge/operations"         class={`persona-btn ${persona === 'operations'         ? 'active' : ''}`}>Operations</a>
+        <a href="/broadridge/fund-admin"         class={`persona-btn ${persona === 'fund-admin'         ? 'active' : ''}`}>Fund Admin</a>
+        <a href="/broadridge/compliance"         class={`persona-btn ${persona === 'compliance'         ? 'active' : ''}`}>Compliance</a>
+        <a href="/" class="persona-btn">← Trustmark Demo</a>
+      </nav>
+
+      <div class="topbar-right">
+
+        <button class="hamburger" id="sidebar-toggle" aria-label="Open navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="font-size-control">
+          <button class="fs-btn" id="fs-decrease" title="Decrease font size">A−</button>
+          <span class="fs-display" id="fs-display">16px</span>
+          <button class="fs-btn" id="fs-increase" title="Increase font size">A+</button>
+        </div>
+
+        <div class="topbar-user">
+          <div class="user-avatar">
+            {persona === 'investor-relations' && 'LC'}
+            {persona === 'advisor'            && 'MT'}
+            {persona === 'operations'         && 'RH'}
+            {persona === 'fund-admin'         && 'SK'}
+            {persona === 'compliance'         && 'DP'}
+          </div>
+          <span class="user-name">
+            {persona === 'investor-relations' && 'Lisa Chen'}
+            {persona === 'advisor'            && 'Michael Torres'}
+            {persona === 'operations'         && 'Robert Hayes'}
+            {persona === 'fund-admin'         && 'Sarah Kim'}
+            {persona === 'compliance'         && 'David Park'}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <aside class="sidebar">
+      <div class="sidebar-persona-mobile">
+        <a href="/broadridge/investor-relations" class={persona === 'investor-relations' ? 'active' : ''}>IR</a>
+        <a href="/broadridge/advisor"            class={persona === 'advisor'            ? 'active' : ''}>Adv</a>
+        <a href="/broadridge/operations"         class={persona === 'operations'         ? 'active' : ''}>Ops</a>
+        <a href="/broadridge/fund-admin"         class={persona === 'fund-admin'         ? 'active' : ''}>Fund</a>
+        <a href="/broadridge/compliance"         class={persona === 'compliance'         ? 'active' : ''}>Comp</a>
+      </div>
+
+      {persona === 'investor-relations' && (
+        <>
+          <span class="sidebar-section-label">Overview</span>
+          <a href="/broadridge/investor-relations" class="sidebar-link active"><span class="sidebar-icon">📊</span> Dashboard</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🗳️</span> Proxy Campaigns</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📅</span> Annual Meetings</a>
+          <span class="sidebar-section-label">Shareholders</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">👥</span> Shareholder Registry</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📨</span> Communications</a>
+          <span class="sidebar-section-label">Documents</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📄</span> Proxy Materials</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🏛️</span> SEC Filings</a>
+          <span class="sidebar-section-label">Support</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">💬</span> Broadridge Rep</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+        </>
+      )}
+
+      {persona === 'advisor' && (
+        <>
+          <span class="sidebar-section-label">Overview</span>
+          <a href="/broadridge/advisor" class="sidebar-link active"><span class="sidebar-icon">📊</span> Dashboard</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">👤</span> My Clients</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">💼</span> Portfolios</a>
+          <span class="sidebar-section-label">Trading</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📈</span> Orders</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🔄</span> Trade History</a>
+          <span class="sidebar-section-label">Compliance</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🚨</span> Alerts</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📋</span> Reports</a>
+          <span class="sidebar-section-label">Support</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🎓</span> Training</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+        </>
+      )}
+
+      {persona === 'operations' && (
+        <>
+          <span class="sidebar-section-label">Overview</span>
+          <a href="/broadridge/operations" class="sidebar-link active"><span class="sidebar-icon">📊</span> Dashboard</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📋</span> Trade Queue</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">✅</span> Settlement</a>
+          <span class="sidebar-section-label">Exceptions</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚠️</span> Open Items</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📁</span> History</a>
+          <span class="sidebar-section-label">Reports</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📄</span> Daily Settlement</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🔍</span> Reconciliation</a>
+          <span class="sidebar-section-label">Support</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">💬</span> Help</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+        </>
+      )}
+
+      {persona === 'fund-admin' && (
+        <>
+          <span class="sidebar-section-label">Overview</span>
+          <a href="/broadridge/fund-admin" class="sidebar-link active"><span class="sidebar-icon">📊</span> Dashboard</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">💹</span> Fund List</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🔢</span> NAV Processing</a>
+          <span class="sidebar-section-label">Transactions</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">➕</span> Subscriptions</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">➖</span> Redemptions</a>
+          <span class="sidebar-section-label">Reporting</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📄</span> Fund Reports</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🏛️</span> Regulatory</a>
+          <span class="sidebar-section-label">Support</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">💬</span> Help</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+        </>
+      )}
+
+      {persona === 'compliance' && (
+        <>
+          <span class="sidebar-section-label">Overview</span>
+          <a href="/broadridge/compliance" class="sidebar-link active"><span class="sidebar-icon">📊</span> Dashboard</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📋</span> Open Items</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🏛️</span> Filings</a>
+          <span class="sidebar-section-label">Monitoring</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🚨</span> Alerts</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚠️</span> Risk Flags</a>
+          <span class="sidebar-section-label">Reports</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">🔍</span> Audit Trail</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">📄</span> Reg Reports</a>
+          <span class="sidebar-section-label">Support</span>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">💬</span> Help</a>
+          <a href="#" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+        </>
+      )}
+    </aside>
+
+    <main class="main-content">
+      <slot />
+    </main>
+
+  </div>
+
+  <script>
+    const MIN = 12, MAX = 32, STEP = 1;
+    const display = document.getElementById('fs-display') as HTMLElement;
+
+    function getSize(): number {
+      return parseInt(document.documentElement.style.fontSize) ||
+             parseInt(getComputedStyle(document.documentElement).fontSize);
+    }
+
+    function setSize(px: number): void {
+      const clamped = Math.min(Math.max(px, MIN), MAX);
+      document.documentElement.style.fontSize = clamped + 'px';
+      display.textContent = clamped + 'px';
+      localStorage.setItem('portal-font-size', String(clamped));
+    }
+
+    (document.getElementById('fs-increase') as HTMLElement).addEventListener('click', () => setSize(getSize() + STEP));
+    (document.getElementById('fs-decrease') as HTMLElement).addEventListener('click', () => setSize(getSize() - STEP));
+
+    const saved = localStorage.getItem('portal-font-size');
+    if (saved) setSize(parseInt(saved));
+    else display.textContent = getSize() + 'px';
+
+    const toggle  = document.getElementById('sidebar-toggle')  as HTMLElement;
+    const overlay = document.getElementById('sidebar-overlay') as HTMLElement;
+    const shell   = document.querySelector('.portal-shell')    as HTMLElement;
+
+    function openSidebar()  { shell?.classList.add('sidebar-open');    toggle?.setAttribute('aria-expanded', 'true');  }
+    function closeSidebar() { shell?.classList.remove('sidebar-open'); toggle?.setAttribute('aria-expanded', 'false'); }
+
+    toggle?.addEventListener('click',  () => shell?.classList.contains('sidebar-open') ? closeSidebar() : openSidebar());
+    overlay?.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
+    document.querySelector('.sidebar')?.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).tagName === 'A') closeSidebar();
+    });
+  </script>
+
+  <script>
+    (function () {
+      function parseNum(text: string) {
+        const m = text.trim().match(/^([^0-9\-]*)([0-9,]+(?:\.[0-9]*)?)(.*)$/);
+        if (!m) return null;
+        const raw = parseFloat(m[2].replace(/,/g, ''));
+        if (isNaN(raw)) return null;
+        const decimals = (m[2].split('.')[1] ?? '').length;
+        return { raw, prefix: m[1], suffix: m[3], hasCommas: m[2].includes(','), decimals };
+      }
+
+      function fmtNum(p: NonNullable<ReturnType<typeof parseNum>>, val: number): string {
+        const fixed = val.toFixed(p.decimals);
+        const [int, dec] = fixed.split('.');
+        const intFmt = p.hasCommas ? int.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : int;
+        return p.prefix + (dec !== undefined ? `${intFmt}.${dec}` : intFmt) + p.suffix;
+      }
+
+      function nudge(val: number): number {
+        if (val === 0) return 0;
+        const up = Math.random() < 0.5;
+        if (val < 50) return Math.max(0, val + (up ? 1 : -1));
+        const pct = 0.004 + Math.random() * 0.014;
+        return Math.max(0, val + val * pct * (up ? 1 : -1));
+      }
+
+      function flash(el: HTMLElement): void {
+        el.classList.remove('live-flash');
+        void el.offsetWidth;
+        el.classList.add('live-flash');
+      }
+
+      function schedule(fn: () => void): void {
+        setTimeout(fn, 2500 + Math.random() * 4000);
+      }
+
+      document.querySelectorAll<HTMLElement>('[data-live]').forEach(el => {
+        function tick(): void {
+          const p = parseNum(el.textContent ?? '');
+          if (p) {
+            const nv = p.decimals === 0 ? Math.round(nudge(p.raw)) : nudge(p.raw);
+            el.textContent = fmtNum(p, nv);
+            flash(el);
+          }
+          schedule(tick);
+        }
+        setTimeout(tick, 1000 + Math.random() * 4000);
+      });
+
+      document.querySelectorAll<HTMLElement>('[data-live-bar]').forEach(el => {
+        let cur = parseFloat(el.dataset.liveBar ?? '0');
+        function tick(): void {
+          cur = Math.min(99, Math.max(3, cur + (Math.random() * 4 - 2)));
+          el.style.width = cur.toFixed(1) + '%';
+          schedule(tick);
+        }
+        setTimeout(tick, 1000 + Math.random() * 4000);
+      });
+    })();
+  </script>
+</body>
+</html>

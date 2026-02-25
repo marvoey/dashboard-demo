@@ -1,0 +1,76 @@
+{
+  "key": "PersonalizedHero",
+  "displayName": "Personalized Hero",
+  "description": "Audience-targeted hero banner with eyebrow, headline, subtext, and CTA. Segment drives Optimizely personalization targeting.",
+  "baseType": "Component",
+  "compositionBehaviors": ["elementEnabled"],
+  "properties": {
+    "segment": {
+      "type": "string",
+      "displayName": "Audience Segment",
+      "description": "Target persona for Optimizely personalization. Used to serve the right variant to the right user.",
+      "required": true,
+      "localized": false,
+      "group": "Targeting",
+      "sortOrder": 10,
+      "enum": [
+        { "value": "Advisor", "displayName": "Financial Advisor" },
+        { "value": "Compliance", "displayName": "Compliance Officer" },
+        { "value": "FundAdmin", "displayName": "Fund Administrator" },
+        { "value": "InvestorRelations", "displayName": "Investor Relations" },
+        { "value": "Operations", "displayName": "Operations" }
+      ],
+      "indexingType": "queryable"
+    },
+    "eyebrow": {
+      "type": "string",
+      "displayName": "Eyebrow",
+      "description": "Small label displayed above the headline",
+      "required": false,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 20,
+      "maxLength": 100
+    },
+    "headline": {
+      "type": "string",
+      "displayName": "Headline",
+      "description": "Primary heading of the hero",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 30,
+      "maxLength": 200,
+      "indexingType": "searchable"
+    },
+    "subtext": {
+      "type": "string",
+      "displayName": "Subtext",
+      "description": "Supporting text displayed below the headline",
+      "required": false,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 40,
+      "maxLength": 500
+    },
+    "ctaLabel": {
+      "type": "string",
+      "displayName": "CTA Label",
+      "description": "Text for the call-to-action button",
+      "required": true,
+      "localized": true,
+      "group": "CTA",
+      "sortOrder": 50,
+      "maxLength": 50
+    },
+    "ctaUrl": {
+      "type": "url",
+      "displayName": "CTA URL",
+      "description": "Destination URL for the call-to-action button",
+      "required": true,
+      "localized": false,
+      "group": "CTA",
+      "sortOrder": 60
+    }
+  }
+}

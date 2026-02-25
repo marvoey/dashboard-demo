@@ -1,0 +1,165 @@
+---
+import BroadridgeLayout from '../../layouts/BroadridgeLayout.astro';
+import RegulatoryNotice from '../../components/cms/RegulatoryNotice.astro';
+import AnnouncementBanner from '../../components/cms/AnnouncementBanner.astro';
+import ResourceDownload from '../../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../../components/cms/SpotlightCard.astro';
+import StatCard from '../../components/data/StatCard.astro';
+import Band from '../../components/layout/Band.astro';
+import Row from '../../components/layout/Row.astro';
+import Col from '../../components/layout/Col.astro';
+import PageHeader from '../../components/broadridge/PageHeader.astro';
+import DataTable from '../../components/broadridge/DataTable.astro';
+
+const filings = [
+  { id: 'FIL-2024-0041', regulation: 'Regulation Best Interest', type: 'Form CRS Annual Update',       dueDate: 'Apr 30, 2024', status: 'In Progress', jurisdiction: 'SEC',    assignee: 'David Park'   },
+  { id: 'FIL-2024-0038', regulation: 'SEC Rule 17a-5',           type: 'FOCUS Report — Q1 2024',       dueDate: 'Apr 26, 2024', status: 'In Progress', jurisdiction: 'FINRA',  assignee: 'Kira Solomon' },
+  { id: 'FIL-2024-0035', regulation: 'Dodd-Frank Title VII',     type: 'SDR Trade Reporting — March',  dueDate: 'Apr 15, 2024', status: 'Filed',       jurisdiction: 'CFTC',   assignee: 'System'       },
+  { id: 'FIL-2024-0031', regulation: 'SEC Rule 10b-10',          type: 'Trade Confirmation Review',    dueDate: 'Apr 10, 2024', status: 'Filed',       jurisdiction: 'SEC',    assignee: 'Kira Solomon' },
+  { id: 'FIL-2024-0028', regulation: 'BSA / AML',                type: 'SAR Monthly Review',           dueDate: 'Apr 20, 2024', status: 'Overdue',     jurisdiction: 'FinCEN', assignee: 'Marcus Webb'  },
+  { id: 'FIL-2024-0022', regulation: 'FINRA Rule 4370',          type: 'Business Continuity Plan',     dueDate: 'Apr 5, 2024',  status: 'Overdue',     jurisdiction: 'FINRA',  assignee: 'David Park'   },
+  { id: 'FIL-2024-0019', regulation: 'Regulation SCI',           type: 'Annual System Review',         dueDate: 'May 15, 2024', status: 'Pending',     jurisdiction: 'SEC',    assignee: 'Unassigned'   },
+  { id: 'FIL-2024-0015', regulation: 'Volcker Rule',             type: 'Annual CEO Attestation',       dueDate: 'May 31, 2024', status: 'Pending',     jurisdiction: 'OCC',    assignee: 'Unassigned'   },
+];
+---
+
+<BroadridgeLayout title="Compliance Dashboard" persona="compliance">
+
+  <PageHeader
+    title="Compliance & Regulatory Dashboard"
+    description="Open items, regulatory filings, and risk monitoring. Data sourced from Broadridge Compliance Platform and FINRA/SEC feeds."
+  />
+
+  <div class="page-grid">
+
+    <RegulatoryNotice
+      noticeId="SEC Release No. 34-99678"
+      title="SEC Regulation S-P Amendment — Enhanced Safeguards Rule Effective May 2024"
+      body="The SEC adopted amendments to Regulation S-P requiring broker-dealers and investment advisers to adopt written incident response programs, notify affected individuals within 30 days of discovering a data breach, and expand the safeguards rule to cover customer information maintained by service providers. Compliance programs must be updated before the effective date of May 13, 2024."
+      effectiveDate="May 13, 2024"
+      expiryDate="Ongoing"
+      source="Optimizely — Legal & Compliance · SEC Release No. 34-99678"
+    />
+
+    <Band>
+      <Row>
+        <Col span="1/4">
+          <StatCard
+            label="Open Compliance Items"
+            value="6"
+            sub="4 assigned · 2 unassigned"
+            sourceIcon="📡"
+            sourceName="Broadridge Compliance"
+          />
+        </Col>
+        <Col span="1/4">
+          <StatCard
+            label="Overdue Filings"
+            value="2"
+            sub="Escalated to CCO on Apr 16"
+            sourceIcon="📡"
+            sourceName="Broadridge Compliance"
+          />
+        </Col>
+        <Col span="1/4">
+          <StatCard
+            label="Filed This Month"
+            value="24"
+            sub="On-time rate: 91.7%"
+            sourceIcon="🗄"
+            sourceName="Regulatory Filing System"
+          />
+        </Col>
+        <Col span="1/4">
+          <StatCard
+            label="Active Surveillance Alerts"
+            value="3"
+            sub="2 trade surveillance · 1 AML"
+            sourceIcon="📡"
+            sourceName="Broadridge Surveillance"
+          />
+        </Col>
+      </Row>
+    </Band>
+
+    <DataTable
+      barTitle="Broadridge Compliance Platform + Regulatory Feeds"
+      sources={[
+        { icon: "📡", name: "Broadridge Compliance" },
+        { icon: "🗄", name: "Regulatory Feeds" },
+      ]}
+      tableTitle="Regulatory Filing Queue"
+      tableSubtitle="8 items · 2 overdue · 2 in progress"
+    >
+      <thead>
+        <tr>
+          <th>Filing ID</th>
+          <th>Regulation</th>
+          <th>Filing Type</th>
+          <th>Due Date</th>
+          <th>Jurisdiction</th>
+          <th>Assignee</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filings.map(f => (
+          <tr>
+            <td class="mono">{f.id}</td>
+            <td style="font-weight:500; font-size:0.78rem;">{f.regulation}</td>
+            <td style="color:var(--text-muted);">{f.type}</td>
+            <td class="mono">{f.dueDate}</td>
+            <td>
+              <span class="data-source">{f.jurisdiction}</span>
+            </td>
+            <td style="color:var(--text-muted);">{f.assignee}</td>
+            <td>
+              <span class={`status ${
+                f.status === 'Filed'       ? 'status-active'  :
+                f.status === 'In Progress' ? 'status-pending' :
+                f.status === 'Overdue'     ? 'status-renewal' :
+                'status-pending'
+              }`}>{f.status}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </DataTable>
+
+    <AnnouncementBanner
+      tag="RegBI Update"
+      headline="Form CRS Annual Update Required by April 30 — Action Needed"
+      body="Your firm's Customer Relationship Summary (Form CRS) must be reviewed and updated for any material changes since the last filing. Broadridge has pre-filled the form using your current disclosures."
+      ctaLabel="Review & File Form CRS →"
+      ctaUrl="#"
+      source="Optimizely — Broadridge Compliance Team"
+    />
+
+    <ResourceDownload
+      tag="Compliance Playbook"
+      title="2024 Regulatory Compliance Playbook"
+      description="A comprehensive guide to all active rule changes, filing deadlines, and Broadridge platform controls mapped to SEC, FINRA, and CFTC requirements."
+      fileType="PDF"
+      fileSize="5.7 MB"
+      assetUrl="#"
+      updatedAt="Revised March 2024"
+      source="Optimizely DAM — Broadridge Compliance Solutions"
+    />
+
+    <SpotlightCard
+      tag="RegBI Monitoring"
+      title="Best Interest Obligation Monitoring"
+      description="Automated surveillance of advisor recommendations against client profiles to identify potential Reg BI conflicts."
+      source="Optimizely — Broadridge Compliance Marketing"
+    />
+
+    <SpotlightCard
+      tag="AML Screening"
+      title="Broadridge AML / KYC Platform"
+      description="Automated transaction monitoring, sanctions screening, and SAR filing workflows integrated with FinCEN BSA E-Filing."
+      source="Optimizely — Broadridge Compliance Marketing"
+    />
+
+  </div>
+
+</BroadridgeLayout>

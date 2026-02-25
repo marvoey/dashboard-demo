@@ -1,0 +1,155 @@
+---
+import BroadridgeLayout from '../../layouts/BroadridgeLayout.astro';
+import CTAStrip from '../../components/cms/CTAStrip.astro';
+import AnnouncementBanner from '../../components/cms/AnnouncementBanner.astro';
+import SpotlightCard from '../../components/cms/SpotlightCard.astro';
+import StatCard from '../../components/data/StatCard.astro';
+import Band from '../../components/layout/Band.astro';
+import Row from '../../components/layout/Row.astro';
+import Col from '../../components/layout/Col.astro';
+import PageHeader from '../../components/broadridge/PageHeader.astro';
+import DataTable from '../../components/broadridge/DataTable.astro';
+
+const exceptions = [
+  { tradeId: 'TRD-20240415-0082', security: 'AAPL US Equity',   type: 'Equity Buy',   settleDate: 'Apr 17, 2024', amount: '$2,184,320', exception: 'Insufficient Funds',    priority: 'High'   },
+  { tradeId: 'TRD-20240415-0119', security: 'TLT US Equity',    type: 'ETF Sell',     settleDate: 'Apr 17, 2024', amount: '$847,500',   exception: 'SSI Mismatch',          priority: 'High'   },
+  { tradeId: 'TRD-20240415-0204', security: 'MSFT US Equity',   type: 'Equity Buy',   settleDate: 'Apr 17, 2024', amount: '$1,402,800', exception: 'Counterparty Affirm',   priority: 'Medium' },
+  { tradeId: 'TRD-20240415-0311', security: 'US T-Note 4.25%',  type: 'Fixed Income', settleDate: 'Apr 16, 2024', amount: '$5,000,000', exception: 'DTC Reject — Code 94',  priority: 'High'   },
+  { tradeId: 'TRD-20240415-0387', security: 'NVDA US Equity',   type: 'Equity Sell',  settleDate: 'Apr 17, 2024', amount: '$612,040',   exception: 'Tax Lot Discrepancy',   priority: 'Low'    },
+  { tradeId: 'TRD-20240415-0422', security: 'SPY US Equity',    type: 'ETF Buy',      settleDate: 'Apr 17, 2024', amount: '$3,720,000', exception: 'Counterparty Affirm',   priority: 'Medium' },
+];
+---
+
+<BroadridgeLayout title="Operations Dashboard" persona="operations">
+
+  <PageHeader
+    title="Operations Dashboard"
+    description="Trade settlement, exception management, and post-trade processing. Data sourced from Broadridge BPS and DTC/NSCC."
+  />
+
+  <div class="page-grid">
+
+    <CTAStrip
+      message="<strong>Scheduled Maintenance — April 20, 2024 2:00–4:00 AM ET:</strong> Broadridge BPS connectivity window for T+1 configuration upgrade. No new trade submissions during this window."
+      primaryCtaLabel="View Maintenance Notice"
+      primaryCtaUrl="#"
+      secondaryCtaLabel="Download Schedule"
+      secondaryCtaUrl="#"
+      source="Optimizely — Broadridge Operations Team"
+    />
+
+    <Band>
+      <Row>
+        <Col span="1/4">
+          <StatCard
+            label="Trades Settled Today"
+            value="8,247"
+            sub="T+1 cutoff: 3:00 PM ET"
+            sourceIcon="⚡"
+            sourceName="Broadridge BPS"
+          />
+        </Col>
+        <Col span="1/4">
+          <StatCard
+            label="Open Exceptions"
+            value="14"
+            sub="6 high priority · 8 need action"
+            sourceIcon="⚡"
+            sourceName="Broadridge BPS"
+          />
+        </Col>
+        <Col span="1/4">
+          <StatCard
+            label="STP Rate"
+            value="99.8%"
+            sub="Target: 99.5% · 7-day avg: 99.6%"
+            sourceIcon="🗄"
+            sourceName="DTC/NSCC Feed"
+          />
+        </Col>
+        <Col span="1/4">
+          <StatCard
+            label="Pending Settlement Value"
+            value="$2.4B"
+            sub="Across 1,204 pending trades"
+            sourceIcon="⚡"
+            sourceName="Broadridge BPS"
+          />
+        </Col>
+      </Row>
+    </Band>
+
+    <DataTable
+      barTitle="Broadridge BPS + DTC/NSCC"
+      sources={[
+        { icon: "⚡", name: "Broadridge BPS" },
+        { icon: "🗄", name: "DTC/NSCC" },
+      ]}
+      tableTitle="Trade Exceptions — April 15, 2024"
+      tableSubtitle="14 open exceptions · Last refreshed 2 min ago"
+    >
+      <thead>
+        <tr>
+          <th>Trade ID</th>
+          <th>Security</th>
+          <th>Type</th>
+          <th>Settle Date</th>
+          <th>Amount</th>
+          <th>Exception</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        {exceptions.map(e => (
+          <tr>
+            <td class="mono">{e.tradeId}</td>
+            <td style="font-weight:500;">{e.security}</td>
+            <td style="color:var(--text-muted);">{e.type}</td>
+            <td class="mono">{e.settleDate}</td>
+            <td style="font-weight:600;" data-live>{e.amount}</td>
+            <td style="color:var(--text);">{e.exception}</td>
+            <td>
+              <span class={`status ${
+                e.priority === 'High'   ? 'status-renewal' :
+                e.priority === 'Medium' ? 'status-pending' :
+                'status-active'
+              }`}>{e.priority}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </DataTable>
+
+    <AnnouncementBanner
+      tag="T+1 Settlement"
+      headline="T+1 Settlement Goes Live May 28, 2024 — Are You Ready?"
+      body="The SEC's T+1 settlement cycle takes effect May 28. Broadridge has updated BPS workflows, affirmation deadlines, and DTC/NSCC connectivity to meet the new requirements."
+      ctaLabel="View T+1 Readiness Guide →"
+      ctaUrl="#"
+      source="Optimizely — Broadridge Operations Marketing"
+    />
+
+    <SpotlightCard
+      tag="Exception Manager"
+      title="Automated Exception Resolution"
+      description="Rule-based exception routing and auto-resolution for common fail reasons, reducing manual touchpoints by up to 60%."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+    <SpotlightCard
+      tag="Settlement Optimizer"
+      title="Intelligent Settlement Netting"
+      description="Broadridge's netting engine reduces settlement obligations and DTC/NSCC fees through intraday position netting."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+    <SpotlightCard
+      tag="Reconciliation"
+      title="Global Recon as a Service"
+      description="Automated multi-custodian reconciliation with real-time break identification and aging workflows."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+  </div>
+
+</BroadridgeLayout>

@@ -1,0 +1,152 @@
+---
+import BroadridgeLayout from '../../layouts/BroadridgeLayout.astro';
+import AnnouncementBanner from '../../components/cms/AnnouncementBanner.astro';
+import ResourceDownload from '../../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../../components/cms/SpotlightCard.astro';
+import StatCard from '../../components/data/StatCard.astro';
+import Band from '../../components/layout/Band.astro';
+import Row from '../../components/layout/Row.astro';
+import Col from '../../components/layout/Col.astro';
+import PageHeader from '../../components/broadridge/PageHeader.astro';
+import DataTable from '../../components/broadridge/DataTable.astro';
+
+const funds = [
+  { name: 'Apex Growth Equity Fund',        cusip: '03748R109', aum: '$1,240,000,000', nav: '$48.72',  dailyChange: '+0.84%', ytd: '+12.4%', status: 'Published'   },
+  { name: 'Clearwater Bond Income Fund',    cusip: '18383M878', aum: '$887,000,000',   nav: '$10.14',  dailyChange: '-0.12%', ytd: '+2.1%',  status: 'Published'   },
+  { name: 'Northshore Balanced Fund',       cusip: '29977A102', aum: '$634,000,000',   nav: '$24.39',  dailyChange: '+0.41%', ytd: '+7.8%',  status: 'Published'   },
+  { name: 'Summit Small Cap Opportunities', cusip: '86667A105', aum: '$412,000,000',   nav: '$31.07',  dailyChange: '+1.22%', ytd: '+18.3%', status: 'Published'   },
+  { name: 'Pacific ESG Core Equity Fund',   cusip: '69343P105', aum: '$1,648,000,000', nav: '$56.18',  dailyChange: '+0.63%', ytd: '+10.7%', status: 'Published'   },
+  { name: 'Ridgeline Multi-Sector Fixed',   cusip: '76617A102', aum: '$203,000,000',   nav: '$9.88',   dailyChange: '+0.02%', ytd: '+1.4%',  status: 'Pending NAV' },
+  { name: 'Lakeshore International Growth', cusip: '51318A300', aum: '$512,000,000',   nav: '$18.44',  dailyChange: '-0.29%', ytd: '+5.2%',  status: 'Published'   },
+  { name: 'Meridian Real Assets Fund',      cusip: '59001A102', aum: '$284,000,000',   nav: '$22.61',  dailyChange: '0.00%',  ytd: '+3.9%',  status: 'Pending NAV' },
+];
+
+const totalAum = funds.reduce((sum, f) => sum + parseFloat(f.aum.replace(/[$,]/g, '')), 0);
+const totalAumFormatted = '$' + (totalAum / 1e9).toFixed(2) + 'B';
+---
+
+<BroadridgeLayout title="Fund Administration Dashboard" persona="fund-admin">
+
+  <PageHeader
+    title="Fund Administration Portal"
+    description="NAV processing, fund transactions, and regulatory reporting. Data sourced from Broadridge Fund Services and Advent Geneva."
+  />
+
+  <div class="page-grid">
+
+    <AnnouncementBanner
+      tag="NAV Deadline"
+      headline="T+0 NAV Cut-off in 2 Hours — 2 Funds Pending Calculation"
+      body="Ridgeline Multi-Sector Fixed and Meridian Real Assets Fund NAVs are pending. Pricing data from Bloomberg is delayed — Broadridge Pricing team has been notified."
+      ctaLabel="View NAV Status →"
+      ctaUrl="#"
+      source="Optimizely — Broadridge Fund Services Ops"
+    />
+
+    <Band>
+      <Row>
+        <Col span="1/3">
+          <StatCard
+            label="Total AUM Under Administration"
+            value={totalAumFormatted}
+            sub="Across 8 active funds"
+            sourceIcon="📡"
+            sourceName="Broadridge Fund Services"
+          />
+        </Col>
+        <Col span="1/3">
+          <StatCard
+            label="Today's Net Subscriptions"
+            value="$48,240,000"
+            sub="Subs: $61.4M · Reds: $13.1M"
+            sourceIcon="📡"
+            sourceName="Transfer Agency"
+          />
+        </Col>
+        <Col span="1/3">
+          <StatCard
+            label="Pending NAV Calculations"
+            value="2"
+            sub="6 published · Cutoff at 4:00 PM ET"
+            sourceIcon="🗄"
+            sourceName="Advent Geneva"
+          />
+        </Col>
+      </Row>
+    </Band>
+
+    <DataTable
+      barTitle="Broadridge Fund Services + Advent Geneva"
+      sources={[
+        { icon: "📡", name: "Broadridge Fund Services" },
+        { icon: "🗄", name: "Advent Geneva" },
+      ]}
+      tableTitle="Fund Register — April 15, 2024"
+      tableSubtitle="8 funds · 2 pending NAV publication"
+    >
+      <thead>
+        <tr>
+          <th>Fund Name</th>
+          <th>CUSIP</th>
+          <th>AUM</th>
+          <th>NAV</th>
+          <th>Daily Change</th>
+          <th>YTD Return</th>
+          <th>NAV Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {funds.map(f => (
+          <tr>
+            <td style="font-weight:500;">{f.name}</td>
+            <td class="mono">{f.cusip}</td>
+            <td data-live>{f.aum}</td>
+            <td style="font-weight:600;" data-live>{f.nav}</td>
+            <td style={`font-weight:600; color:${f.dailyChange.startsWith('+') ? 'var(--green)' : f.dailyChange.startsWith('-') ? 'var(--red)' : 'var(--text-muted)'}`}>{f.dailyChange}</td>
+            <td style={`font-weight:600; color:${f.ytd.startsWith('+') ? 'var(--green)' : 'var(--red)'}`}>{f.ytd}</td>
+            <td>
+              <span class={`status ${
+                f.status === 'Published'   ? 'status-active' :
+                'status-pending'
+              }`}>{f.status}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </DataTable>
+
+    <ResourceDownload
+      tag="Reference Guide"
+      title="Fund Accounting & NAV Processing Reference Guide"
+      description="Standard operating procedures for daily NAV calculation, pricing workflows, exception escalation, and fund accounting reconciliation."
+      fileType="PDF"
+      fileSize="3.4 MB"
+      assetUrl="#"
+      updatedAt="Revised January 2024"
+      source="Optimizely DAM — Broadridge Fund Services"
+    />
+
+    <SpotlightCard
+      tag="NAV Processing"
+      title="Automated NAV Calculation Engine"
+      description="End-to-end automated pricing, accrual processing, and NAV calculation with multi-source pricing validation."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+    <SpotlightCard
+      tag="Transfer Agency"
+      title="Investor Servicing Platform"
+      description="Full-service transfer agency with real-time subscription and redemption processing across all fund structures."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+    <SpotlightCard
+      tag="Regulatory Reporting"
+      title="Edgar & SEC Reporting Suite"
+      description="Automated N-PORT, N-CEN, and ADV filing preparation and submission directly to the SEC EDGAR system."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+  </div>
+
+</BroadridgeLayout>

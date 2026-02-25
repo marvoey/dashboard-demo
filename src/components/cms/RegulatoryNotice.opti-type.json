@@ -1,0 +1,61 @@
+{
+  "key": "RegulatoryNotice",
+  "displayName": "Regulatory Notice",
+  "description": "Jurisdiction-targeted regulatory notice with effective and expiry dates for automated scheduling",
+  "baseType": "Component",
+  "compositionBehaviors": ["elementEnabled"],
+  "properties": {
+    "noticeId": {
+      "type": "string",
+      "displayName": "Notice ID",
+      "description": "Unique identifier for this regulatory notice (e.g. REG-2024-001). Used for tracking and cross-referencing.",
+      "required": true,
+      "localized": false,
+      "group": "Metadata",
+      "sortOrder": 10,
+      "maxLength": 50,
+      "indexingType": "queryable"
+    },
+    "title": {
+      "type": "string",
+      "displayName": "Title",
+      "description": "Short title of the regulatory notice",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 20,
+      "maxLength": 255,
+      "indexingType": "searchable"
+    },
+    "body": {
+      "type": "richText",
+      "displayName": "Body",
+      "description": "Full text of the regulatory notice. Supports inline HTML.",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 30,
+      "indexingType": "searchable"
+    },
+    "effectiveDate": {
+      "type": "dateTime",
+      "displayName": "Effective Date",
+      "description": "Date from which this notice is active. Used to filter out future notices.",
+      "required": true,
+      "localized": false,
+      "group": "Scheduling",
+      "sortOrder": 40,
+      "indexingType": "queryable"
+    },
+    "expiryDate": {
+      "type": "dateTime",
+      "displayName": "Expiry Date",
+      "description": "Date after which this notice is no longer shown. Used to auto-retire expired notices.",
+      "required": true,
+      "localized": false,
+      "group": "Scheduling",
+      "sortOrder": 50,
+      "indexingType": "queryable"
+    }
+  }
+}

@@ -1,0 +1,153 @@
+---
+import BroadridgeLayout from '../../layouts/BroadridgeLayout.astro';
+import AnnouncementBanner from '../../components/cms/AnnouncementBanner.astro';
+import CTAStrip from '../../components/cms/CTAStrip.astro';
+import ResourceDownload from '../../components/cms/ResourceDownload.astro';
+import SpotlightCard from '../../components/cms/SpotlightCard.astro';
+import StatCard from '../../components/data/StatCard.astro';
+import Band from '../../components/layout/Band.astro';
+import Row from '../../components/layout/Row.astro';
+import Col from '../../components/layout/Col.astro';
+import PageHeader from '../../components/broadridge/PageHeader.astro';
+import DataTable from '../../components/broadridge/DataTable.astro';
+
+const campaigns = [
+  { id: 'PRX-2024-001', type: 'Annual Meeting',        recordDate: 'Apr 12, 2024', sent: 12847, votes: 7412, rate: '57.7%', status: 'In Progress'  },
+  { id: 'PRX-2024-002', type: 'Special Meeting',       recordDate: 'Mar 28, 2024', sent: 12603, votes: 9841, rate: '78.1%', status: 'Closed'       },
+  { id: 'PRX-2023-008', type: 'Consent Solicitation',  recordDate: 'Nov 14, 2023', sent: 11920, votes: 8104, rate: '68.0%', status: 'Closed'       },
+  { id: 'PRX-2023-006', type: 'Annual Meeting',        recordDate: 'Apr 18, 2023', sent: 11574, votes: 6988, rate: '60.4%', status: 'Closed'       },
+  { id: 'PRX-2024-003', type: 'Written Consent',       recordDate: 'May 30, 2024', sent: 12847, votes: 821,  rate: '6.4%',  status: 'Open'         },
+];
+---
+
+<BroadridgeLayout title="Investor Relations Dashboard" persona="investor-relations">
+
+  <PageHeader
+    title="Investor Relations Portal"
+    description="Proxy campaigns, shareholder communications, and annual meeting management. Data sourced from Broadridge ICS Platform."
+  />
+
+  <div class="page-grid">
+
+    <CTAStrip
+      message="<strong>Annual Meeting — June 12, 2024:</strong> Voting deadline is June 10. Current response rate is 57.7% — accelerate outreach to reach quorum."
+      primaryCtaLabel="Run Outreach Report"
+      primaryCtaUrl="#"
+      secondaryCtaLabel="View Campaign"
+      secondaryCtaUrl="#"
+      source="Optimizely — IR Communications Team"
+    />
+
+    <AnnouncementBanner
+      tag="Proxy Season 2024"
+      headline="Annual Meeting Materials Now Live on Broadridge Notice & Access"
+      body="Your 2024 proxy statement and annual report are available via Notice & Access. Shareholders will receive email notification within 24 hours of the record date mailing."
+      ctaLabel="View Campaign Status →"
+      ctaUrl="#"
+      source="Optimizely — Corporate Communications"
+    />
+
+    <Band>
+      <Row>
+        <Col span="1/3">
+          <StatCard
+            label="Shareholders of Record"
+            value="12,847"
+            sub="As of April 12, 2024 record date"
+            sourceIcon="📡"
+            sourceName="Broadridge ICS"
+          />
+        </Col>
+        <Col span="1/3">
+          <StatCard
+            label="Votes Received"
+            value="7,412"
+            sub="57.7% response rate · Quorum: 50%"
+            sourceIcon="📡"
+            sourceName="Broadridge ICS"
+          />
+        </Col>
+        <Col span="1/3">
+          <StatCard
+            label="Materials Distributed"
+            value="12,847"
+            sub="E-delivery: 8,204 · Print: 4,643"
+            sourceIcon="📡"
+            sourceName="Broadridge ICS"
+          />
+        </Col>
+      </Row>
+    </Band>
+
+    <DataTable
+      barTitle="Broadridge ICS Platform"
+      sources={[{ icon: "📡", name: "Broadridge ICS" }]}
+      tableTitle="Proxy Campaign History"
+    >
+      <thead>
+        <tr>
+          <th>Campaign ID</th>
+          <th>Type</th>
+          <th>Record Date</th>
+          <th>Materials Sent</th>
+          <th>Votes Received</th>
+          <th>Response Rate</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {campaigns.map(c => (
+          <tr>
+            <td class="mono">{c.id}</td>
+            <td style="font-weight:500;">{c.type}</td>
+            <td class="mono">{c.recordDate}</td>
+            <td data-live>{c.sent.toLocaleString()}</td>
+            <td style="font-weight:500;" data-live>{c.votes.toLocaleString()}</td>
+            <td style="font-weight:600; color:var(--blue);">{c.rate}</td>
+            <td>
+              <span class={`status ${
+                c.status === 'Closed'      ? 'status-active' :
+                c.status === 'In Progress' ? 'status-pending' :
+                'status-renewal'
+              }`}>{c.status}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </DataTable>
+
+    <ResourceDownload
+      tag="Proxy Materials"
+      title="2024 Annual Meeting Proxy Package"
+      description="Complete proxy materials including proxy statement, annual report, and notice of meeting. Filed with the SEC on Schedule 14A."
+      fileType="PDF"
+      fileSize="4.2 MB"
+      assetUrl="#"
+      updatedAt="Filed April 5, 2024"
+      source="Optimizely DAM — Legal & IR Team"
+    />
+
+    <SpotlightCard
+      tag="Virtual Meeting"
+      title="Broadridge Virtual Shareholder Meeting"
+      description="Host a fully virtual or hybrid annual meeting with live Q&A, real-time vote tabulation, and a full audit trail."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+    <SpotlightCard
+      tag="Notice & Access"
+      title="Digital Proxy Delivery"
+      description="Reduce print costs and reach shareholders faster with e-delivery via Broadridge Notice & Access."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+    <SpotlightCard
+      tag="Analytics"
+      title="ProxyEdge® Shareholder Insights"
+      description="Real-time visibility into institutional voting intentions and beneficial ownership data."
+      source="Optimizely — Broadridge Product Marketing"
+    />
+
+  </div>
+
+</BroadridgeLayout>
