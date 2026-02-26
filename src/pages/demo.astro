@@ -1,6 +1,10 @@
 ---
 import BroadridgeLayout from '../layouts/BroadridgeLayout.astro';
+import '../styles/demo.css';
 import { cmsClient } from '../lib/cms';
+import { PORTAL_WIDGET_EXPERIENCE_BY_PATH } from '../queries/portalWidgetExperience';
+import Content from '../components/cms/Content.astro';
+import ResultInspector from '../components/broadridge/ResultInspector.astro';
 
 // --- Domain resolution ---
 // CMS_ORIGIN is the canonical domain registered in Optimizely Graph.
@@ -16,76 +20,21 @@ const base = CMS_ORIGIN && aliases.has(Astro.url.host) ? CMS_ORIGIN : Astro.url.
 const urlPath    = `${Astro.url.pathname.replace(/\/$/, '')}/`;
 const urlNoSlash = urlPath.replace(/\/$/, '');
 
-// --- Query ---
-const CONTENT_BY_PATH = `
-  query contentByPath($base: String, $url: String!, $urlNoSlash: String!) {
-    _Experience(
-      where: {
-        _metadata: { url: { base: { eq: $base } } }
-        _and: [{
-          _or: [
-            { _metadata: { url: { default:      { eq: $url        } } } }
-            { _metadata: { url: { default:      { eq: $urlNoSlash } } } }
-            { _metadata: { url: { hierarchical: { eq: $url        } } } }
-          ]
-        }]
-      }
-    ) {
-      item {
-        _metadata { key version locale types }
-        composition {
-          key nodeType type displayName
-          displaySettings { key value }
-          nodes {
-            key nodeType type displayName displayTemplateKey
-            displaySettings { key value }
-            ... on CompositionStructureNode {
-              nodes {
-                key nodeType type displayName displayTemplateKey
-                displaySettings { key value }
-                ... on CompositionStructureNode {
-                  nodes {
-                    key nodeType type displayName displayTemplateKey
-                    displaySettings { key value }
-                    ... on CompositionComponentNode {
-                      component {
-                        _metadata { types key version locale }
-                        _json
-                      }
-                    }
-                  }
-                }
-                ... on CompositionComponentNode {
-                  component {
-                    _metadata { types key version locale }
-                    _json
-                  }
-                }
-              }
-            }
-            ... on CompositionComponentNode {
-              component {
-                _metadata { types key version locale }
-                _json
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-const result = await cmsClient.request(CONTENT_BY_PATH, { base, url: urlPath, urlNoSlash });
-const item   = result?._Experience?.item ?? null;
+const result = await cmsClient.request(PORTAL_WIDGET_EXPERIENCE_BY_PATH, { base, url: urlPath, urlNoSlash });
+const composition = result?._Experience?.item?.composition;
 ---
 
 <BroadridgeLayout title="Demo" persona="demo">
-  <pre style="background:#111;color:#e0e0e0;padding:1.5rem;border-radius:6px;font-size:0.75rem;overflow-x:auto;white-space:pre-wrap;">
-    base:      {base}
-    url:       {urlPath}
-    urlNoSlash:{urlNoSlash}
+  <div class="demo-wrap">
+    <div class="meta-block">
+      base: <span>{base}</span><br/>
+      url: <span>{urlPath}</span><br/>
+      urlNoSlash: <span>{urlNoSlash}</span>
+    </div>
 
-    result: {JSON.stringify(result, null, 2)}
-  </pre>
+    {composition && <Content composition={composition} />}
+
+    <div class="band-label">FULL RESULT</div>}
+    <!-- <ResultInspector result={result} /> -->
+  </div>
 </BroadridgeLayout>

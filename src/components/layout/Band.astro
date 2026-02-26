@@ -1,12 +1,27 @@
 ---
-interface Props {
-  label?: string;
-  gap?: string;
+import Row from './Row.astro';
+
+interface RowNode {
+  key: string;
+  nodeType: string;
+  type: string;
+  displayName: string;
+  displayTemplateKey?: string;
+  displaySettings?: { key: string; value: string }[];
+  cols?: RowNode[];
+  component?: Record<string, unknown>;
 }
-const { label, gap } = Astro.props;
+
+interface Props {
+  rows?: RowNode[];
+}
+
+const { rows } = Astro.props;
 ---
 
-<div class="band" style={gap ? `--band-gap: ${gap}` : undefined}>
-  {label && <div class="band-label">{label}</div>}
-  <slot />
+<div class="band">
+  {(rows ?? ([] as RowNode[])).map(row => (
+    <Row cols={row.cols} />
+  ))}
+  <slot/>
 </div>

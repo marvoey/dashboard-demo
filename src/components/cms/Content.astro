@@ -1,0 +1,35 @@
+---
+import Band from "../layout/Band.astro";
+import ResultInspector from "../broadridge/ResultInspector.astro";
+
+interface CompositionNode {
+  key: string;
+  nodeType: string;
+  type: string;
+  displayName: string;
+  displayTemplateKey?: string;
+  displaySettings?: { key: string; value: string }[];
+  rows?: CompositionNode[];
+  component?: Record<string, unknown>;
+}
+
+interface Composition {
+  key: string;
+  nodeType: string;
+  type: string;
+  displayName: string;
+  displaySettings?: { key: string; value: string }[];
+  sections?: CompositionNode[];
+}
+
+interface Props {
+  composition: Composition;
+}
+
+const { composition } = Astro.props;
+const sections = (composition.sections ?? []).filter(
+  (n) => n.nodeType === "section",
+);
+---
+
+{sections.map((section) => <Band rows={section.rows} />)}

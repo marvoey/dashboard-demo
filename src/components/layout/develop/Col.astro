@@ -26,7 +26,7 @@ interface Props {
   col?: ColNode;
 }
 
-const { span = '1/3', label, col } = Astro.props;
+const { span = '1/2', label, col } = Astro.props;
 
 const spanClass: Record<Span, string> = {
   'full': 'col-full',
@@ -37,25 +37,21 @@ const spanClass: Record<Span, string> = {
   '1/4':  'col-1-4',
 };
 
-type TypedComponent = {
-  type?: string;
-  _metadata?: { key?: string };
-  component?: Record<string, unknown>;
-};
-
-const components = (col?.components ?? []) as TypedComponent[];
-console.log(`Col with span ${span} has ${components.length} components`, components);
+const style = [
+  'border: 2px dashed gold',
+  'padding: 0.5rem',
+].join('; ');
 ---
 
-<div class={`layout-col ${spanClass[span]}`}>
-  {components.map(node => {
-    const type = node.type;
-    const source = node._metadata?.key ?? '';
-    const component = node.component ?? {};
-    // console.log(`Rendering component of type ${type} from source ${source}`, component);
+<div class={`layout-col ${spanClass[span]}`} style={style}>
+  {label && <div class="band-label">{label}</div>}
+
+  {(col?.components ?? []).map(component => {
+    const type = component.type;
+    const source = component._metadata?.key ?? '';
 
     return (
-      <div class="comp comp-cms span-3">
+      <>
         {type === 'PortalWidgetAnnouncementBanner' && (
           <AnnouncementBanner
             tag={component.Tag as string}
@@ -124,7 +120,9 @@ console.log(`Col with span ${span} has ${components.length} components`, compone
         )}
 
         {!type && <ResultInspector result={component} label="Unknown component" />}
-      </div>
+      </>
     );
   })}
+
+  <slot />
 </div>

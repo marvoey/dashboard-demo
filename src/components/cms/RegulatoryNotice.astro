@@ -8,15 +8,29 @@ interface Props {
   source: string;
   badge?: string;
 }
-const { noticeId, title, body, effectiveDate, expiryDate, source, badge = '✦ Jurisdiction-Targeted' } = Astro.props;
+const {
+  noticeId,
+  title,
+  body,
+  effectiveDate,
+  expiryDate,
+  source,
+  badge = "✦ Jurisdiction-Targeted",
+} = Astro.props;
 ---
 
 <div class="comp comp-cms span-3">
   <div class="comp-bar">
     <div class="comp-bar-left">
-      <a href="/components/regulatory-notice" target="_blank" class="comp-explain-link">✦ CMS Component ↗</a>
+      <a
+        href="/components/regulatory-notice"
+        target="_blank"
+        class="comp-explain-link">✦ CMS Component ↗</a
+      >
       <span style="opacity:0.4;">·</span>
-      <span style="font-weight:500; text-transform:none; letter-spacing:0;">{source}</span>
+      <span style="font-weight:500; text-transform:none; letter-spacing:0;"
+        >{source}</span
+      >
     </div>
     <span class="opti-badge">{badge}</span>
   </div>
@@ -25,8 +39,10 @@ const { noticeId, title, body, effectiveDate, expiryDate, source, badge = '✦ J
       <span class="rn-icon">⚠</span>
       <div class="rn-body">
         <div class="rn-title">{title}</div>
-        <p class="rn-text">{body}</p>
-        <div class="rn-meta">{noticeId} · Effective {effectiveDate} · Expires {expiryDate}</div>
+        <p class="rn-text" set:html={body} />
+        <div class="rn-meta">
+          {noticeId} · Effective {effectiveDate} · Expires {expiryDate}
+        </div>
       </div>
     </div>
   </div>

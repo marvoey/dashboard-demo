@@ -1,0 +1,37 @@
+---
+import ResultInspector from '../broadridge/ResultInspector.astro';
+import Row from './Row.astro';
+
+interface RowNode {
+  key: string;
+  nodeType: string;
+  type: string;
+  displayName: string;
+  displayTemplateKey?: string;
+  displaySettings?: { key: string; value: string }[];
+  cols?: RowNode[];
+  component?: Record<string, unknown>;
+}
+
+interface Props {
+  label?: string;
+  gap?: string;
+  rows?: RowNode[];
+}
+const { label, gap, rows } = Astro.props;
+// console.log('Band rows', rows);
+
+const style = [
+  'border: 2px dashed cyan',
+  'padding: 0.5rem',
+  gap ? `--band-gap: ${gap}` : undefined,
+].filter(Boolean).join('; ');
+---
+
+<div class="band" style={style}>
+  {label && <div class="band-label">{label}</div>}
+  {(rows ?? []).map(row => (
+    <Row cols={row.cols} label='ROW'/>
+  ))}
+  <slot />
+</div>

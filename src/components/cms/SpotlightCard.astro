@@ -19,6 +19,6 @@ const { tag, title, description, source } = Astro.props;
   <div class="comp-body">
     <div class="spotlight-item-tag">{tag}</div>
     <h4 style="font-size:0.875rem; font-weight:600; color:var(--navy); margin: 5px 0 4px;">{title}</h4>
-    <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">{description}</p>
+    <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;" set:html={description} />
   </div>
 </div>

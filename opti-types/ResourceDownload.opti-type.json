@@ -1,0 +1,95 @@
+{
+  "key": "ResourceDownload",
+  "displayName": "Resource Download",
+  "description": "Downloadable resource card linked to a DAM file asset. fileType and updatedAt are editorial overrides; the asset reference provides the actual download URL.",
+  "baseType": "Component",
+  "compositionBehaviors": ["elementEnabled"],
+  "properties": {
+    "tag": {
+      "type": "string",
+      "displayName": "Tag",
+      "description": "Resource category label",
+      "required": true,
+      "localized": false,
+      "group": "Content",
+      "sortOrder": 10,
+      "enum": [
+        { "value": "Report", "displayName": "Report" },
+        { "value": "Guide", "displayName": "Guide" },
+        { "value": "Template", "displayName": "Template" },
+        { "value": "Whitepaper", "displayName": "Whitepaper" },
+        { "value": "Presentation", "displayName": "Presentation" }
+      ],
+      "indexingType": "queryable"
+    },
+    "title": {
+      "type": "string",
+      "displayName": "Title",
+      "description": "Resource title displayed on the card",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 20,
+      "maxLength": 255,
+      "indexingType": "searchable"
+    },
+    "description": {
+      "type": "string",
+      "displayName": "Description",
+      "description": "Short description of the resource",
+      "required": false,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 30,
+      "maxLength": 500
+    },
+    "fileType": {
+      "type": "string",
+      "displayName": "File Type",
+      "description": "Display label for the file format shown on the card and download button",
+      "required": true,
+      "localized": false,
+      "group": "Asset",
+      "sortOrder": 40,
+      "enum": [
+        { "value": "PDF", "displayName": "PDF" },
+        { "value": "XLS", "displayName": "Excel (XLS)" },
+        { "value": "XLSX", "displayName": "Excel (XLSX)" },
+        { "value": "PPT", "displayName": "PowerPoint (PPT)" },
+        { "value": "PPTX", "displayName": "PowerPoint (PPTX)" },
+        { "value": "DOCX", "displayName": "Word (DOCX)" }
+      ],
+      "indexingType": "queryable"
+    },
+    "fileSize": {
+      "type": "string",
+      "displayName": "File Size",
+      "description": "Human-readable file size for display (e.g. 2.4 MB). Editorial override — not derived from the asset.",
+      "required": false,
+      "localized": false,
+      "group": "Asset",
+      "sortOrder": 50,
+      "maxLength": 20
+    },
+    "asset": {
+      "type": "contentReference",
+      "displayName": "Asset",
+      "description": "The downloadable file in the DAM. Provides the actual download URL via cmp_PublicRawFileAsset.Url.",
+      "required": true,
+      "localized": false,
+      "group": "Asset",
+      "sortOrder": 60,
+      "allowedTypes": ["cmp_PublicRawFileAsset"]
+    },
+    "updatedAt": {
+      "type": "dateTime",
+      "displayName": "Updated At",
+      "description": "Date the resource was last updated. Displayed on the card as 'Updated MM/YYYY'.",
+      "required": false,
+      "localized": false,
+      "group": "Metadata",
+      "sortOrder": 70,
+      "indexingType": "queryable"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+---
+import BroadridgeLayout from "../layouts/BroadridgeLayout.astro";
+import "../styles/demo.css";
+import { cmsClient } from "../lib/cms";
+import { PORTAL_WIDGET_EXPERIENCE_BY_PATH } from "../queries/portalWidgetExperience";
+import Content from "../components/cms/Content.astro";
+import ResultInspector from "../components/broadridge/ResultInspector.astro";
+import PageHeader from "../components/broadridge/PageHeader.astro";
+
+// --- Domain resolution ---
+// CMS_ORIGIN is the canonical domain registered in Optimizely Graph.
+// DOMAIN_ALIASES is a comma-separated list of hosts that should map to it
+// (e.g. localhost:4321 in local dev).
+const CMS_ORIGIN = import.meta.env.CMS_ORIGIN as string | undefined;
+const DOMAIN_ALIASES = import.meta.env.DOMAIN_ALIASES as string | undefined;
+const aliases = new Set(
+  (DOMAIN_ALIASES ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
+);
+const base =
+  CMS_ORIGIN && aliases.has(Astro.url.host) ? CMS_ORIGIN : Astro.url.origin;
+
+// --- Path resolution ---
+// Optimizely Graph stores URLs with a trailing slash; also check without.
+const urlPath = `${Astro.url.pathname.replace(/\/$/, "")}/`;
+const urlNoSlash = urlPath.replace(/\/$/, "");
+
+const result = await cmsClient.request(PORTAL_WIDGET_EXPERIENCE_BY_PATH, {
+  base,
+  url: urlPath,
+  urlNoSlash,
+});
+const composition = result?._Experience?.item?.composition;
+---
+
+<BroadridgeLayout title="Demo" persona="demo">
+  <PageHeader
+    title="Good morning, Michael 👋"
+    description="Your book of business as of today. Data sourced from Broadridge Wealth Management and Portfolio Data Hub."
+  />
+  <div class="page-grid">
+    {composition && <Content composition={composition} />}
+  </div>
+</BroadridgeLayout>

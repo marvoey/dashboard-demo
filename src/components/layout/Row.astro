@@ -1,16 +1,15 @@
 ---
-interface Props {
-  gap?: string;
-  align?: 'start' | 'center' | 'end' | 'stretch';
-}
-const { gap, align } = Astro.props;
+import Col from './Col.astro';
 
-const style = [
-  gap   ? `--row-gap: ${gap}`     : undefined,
-  align ? `--row-align: ${align}` : undefined,
-].filter(Boolean).join('; ');
+interface Props {
+  cols?: unknown[];
+}
+const { cols } = Astro.props;
+
 ---
 
-<div class="layout-row" style={style || undefined}>
-  <slot />
+<div class="layout-row">
+  {(cols ?? []).map(col => (
+    <Col label='COLUMN' col={col}/>
+  ))}
 </div>

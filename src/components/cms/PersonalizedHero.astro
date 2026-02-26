@@ -26,7 +26,7 @@ const { eyebrow, headline, subtext, ctaLabel, ctaUrl, segment, source, badge = '
       <span class="ph-targeting-badge">Segment: {segment}</span>
       <div class="ph-eyebrow">{eyebrow}</div>
       <h2 class="ph-headline">{headline}</h2>
-      <p class="ph-subtext">{subtext}</p>
+      <p class="ph-subtext" set:html={subtext}/>
       <a href={ctaUrl} class="ph-cta">{ctaLabel}</a>
     </div>
   </div>

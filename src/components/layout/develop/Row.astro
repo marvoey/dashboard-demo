@@ -1,0 +1,27 @@
+---
+import ResultInspector from '../broadridge/ResultInspector.astro';
+import Col from './Col.astro';
+
+interface Props {
+  gap?: string;
+  align?: 'start' | 'center' | 'end' | 'stretch';
+  label?: string;
+  cols?: unknown[];
+}
+const { gap, align, label, cols } = Astro.props;
+
+const style = [
+  'border: 2px dashed green',
+  'padding: 0.5rem',
+  gap   ? `--row-gap: ${gap}`     : undefined,
+  align ? `--row-align: ${align}` : undefined,
+].filter(Boolean).join('; ');
+---
+
+<div class="layout-row" style={style || undefined}>
+  {label && <div class="band-label">{label}</div>}
+  {(cols ?? []).map(col => (
+    <Col label='COLUMN' col={col}/>
+  ))}
+  <slot />
+</div>

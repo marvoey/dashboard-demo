@@ -1,0 +1,47 @@
+{
+  "key": "SpotlightCard",
+  "displayName": "Spotlight Card",
+  "description": "Compact card for highlighting content items such as guides, webinars, reports, and training resources",
+  "baseType": "Component",
+  "compositionBehaviors": ["elementEnabled"],
+  "properties": {
+    "tag": {
+      "type": "string",
+      "displayName": "Tag",
+      "description": "Content category label displayed at the top of the card",
+      "required": true,
+      "localized": false,
+      "group": "Content",
+      "sortOrder": 10,
+      "enum": [
+        { "value": "Guide", "displayName": "Guide" },
+        { "value": "Webinar", "displayName": "Webinar" },
+        { "value": "Update", "displayName": "Update" },
+        { "value": "Report", "displayName": "Report" },
+        { "value": "Training", "displayName": "Training" }
+      ],
+      "indexingType": "queryable"
+    },
+    "title": {
+      "type": "string",
+      "displayName": "Title",
+      "description": "Card heading",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 20,
+      "maxLength": 150,
+      "indexingType": "searchable"
+    },
+    "description": {
+      "type": "string",
+      "displayName": "Description",
+      "description": "Short supporting text displayed below the title",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 30,
+      "maxLength": 300
+    }
+  }
+}

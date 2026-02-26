@@ -26,7 +26,7 @@ const { tag, title, description, fileType, fileSize, assetUrl, updatedAt, source
       <div class="rd-body">
         <div class="rd-tag">{tag}</div>
         <div class="rd-title">{title}</div>
-        <p class="rd-desc">{description}</p>
+        <p class="rd-desc" set:html={description} />
         <div class="rd-meta">{fileSize} · {updatedAt}</div>
         <a href={assetUrl} class="rd-download">↓ Download {fileType}</a>
       </div>

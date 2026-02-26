@@ -1,0 +1,57 @@
+{
+  "key": "CTAStrip",
+  "displayName": "CTA Strip",
+  "description": "Full-width strip with a rich text message and one or two call-to-action buttons. Use Optimizely content scheduling for auto-expiry.",
+  "baseType": "Component",
+  "compositionBehaviors": ["elementEnabled"],
+  "properties": {
+    "message": {
+      "type": "richText",
+      "displayName": "Message",
+      "description": "Primary message text. Supports inline HTML (bold, links, etc.).",
+      "required": true,
+      "localized": true,
+      "group": "Content",
+      "sortOrder": 10,
+      "indexingType": "searchable"
+    },
+    "primaryCtaLabel": {
+      "type": "string",
+      "displayName": "Primary CTA Label",
+      "description": "Text for the primary action button",
+      "required": true,
+      "localized": true,
+      "group": "CTAs",
+      "sortOrder": 20,
+      "maxLength": 50
+    },
+    "primaryCtaUrl": {
+      "type": "url",
+      "displayName": "Primary CTA URL",
+      "description": "Destination URL for the primary action button",
+      "required": true,
+      "localized": false,
+      "group": "CTAs",
+      "sortOrder": 30
+    },
+    "secondaryCtaLabel": {
+      "type": "string",
+      "displayName": "Secondary CTA Label",
+      "description": "Text for the optional secondary action button. Leave blank to show only the primary CTA.",
+      "required": false,
+      "localized": true,
+      "group": "CTAs",
+      "sortOrder": 40,
+      "maxLength": 50
+    },
+    "secondaryCtaUrl": {
+      "type": "url",
+      "displayName": "Secondary CTA URL",
+      "description": "Destination URL for the secondary action button",
+      "required": false,
+      "localized": false,
+      "group": "CTAs",
+      "sortOrder": 50
+    }
+  }
+}
